@@ -24,7 +24,6 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 import Admin from "layouts/Admin.js";
 import LoginScreen from 'layouts/LoginScreen';
 import Home from './layouts/Home';
-import RTL from "layouts/RTL.js";
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "assets/css/material-dashboard-react.css?v=1.8.0";
