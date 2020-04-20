@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
 
 import './LoginStyles.scss'
+import { setTextRange } from 'typescript';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('user1');
   const [password, setPassword] = useState('');
+
+  const user = useSelector( state => state.user);
+  const dispatch = useDispatch();
 
   let history = useHistory();
   
@@ -21,6 +26,10 @@ export default function LoginScreen() {
     })
       .then(res => res.json())
       .then(resJSON => {
+        dispatch({
+          type: 'SET_CURRENT_USER',
+          payload: resJSON.da
+        });
         history.replace('/home', resJSON.da.id);
       })
       .catch(err => {console.log(err)})

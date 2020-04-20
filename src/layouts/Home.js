@@ -17,6 +17,8 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
 
+import {useSelector} from 'react-redux';
+
 let ps;
 
 const switchRoutes = (
@@ -49,6 +51,9 @@ export default function Home({ ...rest }) {
   const [color, setColor] = React.useState("blue");
   const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const user = useSelector( state => state.user.user);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -80,6 +85,7 @@ export default function Home({ ...rest }) {
   }, [mainPanel]);
   return (
     <div className={classes.wrapper}>
+      {console.log("IN_HOME_", user)}
       <Sidebar
         routes={routes}
         logoText={"Үнэлгээний систем"}
