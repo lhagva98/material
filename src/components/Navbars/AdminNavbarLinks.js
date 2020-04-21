@@ -55,7 +55,7 @@ export default function AdminNavbarLinks() {
             className: classes.margin + " " + classes.search
           }}
           inputProps={{
-            placeholder: "Search",
+            placeholder: "Хайлт хийх",
             inputProps: {
               "aria-label": "Search"
             }

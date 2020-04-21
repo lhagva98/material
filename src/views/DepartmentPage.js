@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -6,6 +6,7 @@ import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
+import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
@@ -43,65 +44,58 @@ const useStyles = makeStyles(styles);
 
 export default function DepartmentPage() {
   const classes = useStyles();
+
+  const [dep, setDep] = useState();
+
+  useEffect(() => {
+    fetch(`http://localhost:3001/departments/findAll`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(res => res.json())
+      .then(resJSON => {
+        console.log("DEPARTMENT_FETCH_", resJSON);
+        setDep(resJSON.dep);
+      },
+        (err) => {
+          console.log("DEPARTMENT_FETCH_ERR_")
+        })
+      .catch(err => { console.log(err) })
+  }, []);
+
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
+            <h4 className={classes.cardTitleWhite}>Хэлтэсүүд</h4>
             <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
+              Байгууллагын хэлтсүүдийн тухай дэлгэрэнгүй мэдээлэл
             </p>
           </CardHeader>
           <CardBody>
+            <Button color="success" size="sm" round>
+              Нэмэх
+            </Button>
+            <Button color="warning" size="sm" round>
+              Өөрчлөх
+            </Button>
+            <Button color="danger" size="sm" round>
+              Устгах
+            </Button>
             <Table
+              styles
               tableHeaderColor="primary"
-              tableHead={["Name", "Country", "City", "Salary"]}
+              tableHead={["Нэр", "Тайлбайр", "Толгой Хэлтэс"]}
               tableData={[
-                ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-                ["Mason Porter", "Chile", "Gloucester", "$78,615"]
-              ]}
-            />
-          </CardBody>
-        </Card>
-      </GridItem>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card plain>
-          <CardHeader plain color="primary">
-            <h4 className={classes.cardTitleWhite}>
-              Table on Plain Background
-            </h4>
-            <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
-            </p>
-          </CardHeader>
-          <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["ID", "Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-                ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-                ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-                [
-                  "4",
-                  "Philip Chaney",
-                  "$38,735",
-                  "Korea, South",
-                  "Overland Park"
-                ],
-                [
-                  "5",
-                  "Doris Greene",
-                  "$63,542",
-                  "Malawi",
-                  "Feldkirchen in Kärnten"
-                ],
-                ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"]
+                ["Удирдлага", "Тайлбаргүй", ""],
+                ["Санхүү", "Тайлбаргүй", "Удирдлага"],
+                ["Мэдээлэл технологийн алба", "Тайлбаргүй", "Удирдлага"],
+                ["Аппликейшн хөгжүүлэлтийн алба", "Тайлбаргүй", "МТА"],
+                ["Контент хөгжүүлэлтийн алба", "Тайлбаргүй", "Удирдлага"],
               ]}
             />
           </CardBody>

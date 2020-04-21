@@ -45,19 +45,22 @@ export default function DashboardPage() {
   const classes = useStyles();
   return (
     <div>
-      <GridContainer>
-        <GridItem xs={12} sm={6} md={3}>
+      <GridContainer >
+        <GridItem xs={12} sm={6} md={3} >
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
                 <Icon>content_copy</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Used Space</p>
+              <p className={classes.cardCategory}>Гүйцэтгэсэн ажлын тоо</p>
+              <br></br>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+              29/50
+                {/*  <small>GB</small> */}
               </h3>
+                <br></br>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <Danger>
                   <Warning />
@@ -66,7 +69,7 @@ export default function DashboardPage() {
                   Get more space
                 </a>
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
@@ -75,13 +78,13 @@ export default function DashboardPage() {
               <CardIcon color="success">
                 <Store />
               </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <p className={classes.cardCategory}>Байгууллагын зардал</p>
+              <h3 className={classes.cardTitle}>342,000₮</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <DateRange />
-                Last 24 Hours
+                Сүүлийн 24 цаг
               </div>
             </CardFooter>
           </Card>
@@ -92,15 +95,17 @@ export default function DashboardPage() {
               <CardIcon color="danger">
                 <Icon>info_outline</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Fixed Issues</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <p className={classes.cardCategory}>Хугацаа хэтэрсэн ажлууд</p>
+                <br></br>
+              <h3 className={classes.cardTitle}>15</h3>
+                <br></br>
             </CardHeader>
-            <CardFooter stats>
+            {/* <CardFooter stats>
               <div className={classes.stats}>
                 <LocalOffer />
                 Tracked from Github
               </div>
-            </CardFooter>
+            </CardFooter> */}
           </Card>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
@@ -109,8 +114,8 @@ export default function DashboardPage() {
               <CardIcon color="info">
                 <Accessibility />
               </CardIcon>
-              <p className={classes.cardCategory}>Followers</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <p className={classes.cardCategory}>Нийт ажилчид</p>
+              <h3 className={classes.cardTitle}>245</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -134,17 +139,17 @@ export default function DashboardPage() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Daily Sales</h4>
-              <p className={classes.cardCategory}>
+              <h4 className={classes.cardTitle}>Ажил үүсгэлт</h4>
+              {/* <p className={classes.cardCategory}>
                 <span className={classes.successText}>
                   <ArrowUpward className={classes.upArrowCardCategory} /> 55%
                 </span>{" "}
                 increase in today sales.
-              </p>
+              </p> */}
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> updated 4 minutes ago
+                <AccessTime /> 4 минутын өмнө
               </div>
             </CardFooter>
           </Card>
@@ -162,12 +167,12 @@ export default function DashboardPage() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <h4 className={classes.cardTitle}>Ажил гүйцэтгэл</h4>
+              {/* <p className={classes.cardCategory}>Last Campaign Performance</p> */}
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
+                <AccessTime /> 1 жил
               </div>
             </CardFooter>
           </Card>
@@ -184,12 +189,12 @@ export default function DashboardPage() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Completed Tasks</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <h4 className={classes.cardTitle}>Ажил сунгалт</h4>
+              {/* <p className={classes.cardCategory}>Last Campaign Performance</p> */}
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
+                <AccessTime /> сүүлийн 24 цаг
               </div>
             </CardFooter>
           </Card>

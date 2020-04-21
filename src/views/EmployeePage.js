@@ -8,6 +8,7 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import Button from "components/CustomButtons/Button.js";
 
 const styles = {
   cardCategoryWhite: {
@@ -48,65 +49,37 @@ export default function EmployeePage() {
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Simple Table</h4>
-            <p className={classes.cardCategoryWhite}>
+            <h4 className={classes.cardTitleWhite}>Нийт ажилчдын жагсаалт</h4>
+            {/* <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
-            </p>
+            </p> */}
           </CardHeader>
           <CardBody>
+            <Button color="success" size="sm" round>
+              Нэмэх
+            </Button>
+            <Button color="warning" size="sm" round>
+              Өөрчлөх
+            </Button>
+            <Button color="danger" size="sm" round>
+              Устгах
+            </Button>
+            <Button color="default" size="sm" round>
+              Филтер
+            </Button>
             <Table
               tableHeaderColor="primary"
-              tableHead={["Name", "Country", "City", "Salary"]}
+              tableHead={["Овог", "Нэр", "Албан тушаал", "Утасны дугаар", "И-Мэйл"]}
               tableData={[
-                ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                ["Philip Chaney", "Korea, South", "Overland Park", "$38,735"],
-                ["Doris Greene", "Malawi", "Feldkirchen in Kärnten", "$63,542"],
-                ["Mason Porter", "Chile", "Gloucester", "$78,615"]
+                ["Батсүх", "Тэргэл", "Захирал", "99164071", "batsukhtergel@company.com"],
+                ["Уланбаяр", "Цэцэгмаа", "Менежер", "45645678", "tstststs@dfasdf.com"],
+                ["Энхжаргал", "Бат-Эрдэнэ", "Ажилтан", "79878999", "sdaffdsaf@dfadafsf.com"],
+                ["Жавхлант", "Батмөнх", "Ажилтан", "99885236", "dfasdfsf@dfadd.com"],
               ]}
             />
           </CardBody>
         </Card>
       </GridItem>
-      <GridItem xs={12} sm={12} md={12}>
-        <Card plain>
-          <CardHeader plain color="primary">
-            <h4 className={classes.cardTitleWhite}>
-              Table on Plain Background
-            </h4>
-            <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
-            </p>
-          </CardHeader>
-          <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["ID", "Name", "Country", "City", "Salary"]}
-              tableData={[
-                ["1", "Dakota Rice", "$36,738", "Niger", "Oud-Turnhout"],
-                ["2", "Minerva Hooper", "$23,789", "Curaçao", "Sinaai-Waas"],
-                ["3", "Sage Rodriguez", "$56,142", "Netherlands", "Baileux"],
-                [
-                  "4",
-                  "Philip Chaney",
-                  "$38,735",
-                  "Korea, South",
-                  "Overland Park"
-                ],
-                [
-                  "5",
-                  "Doris Greene",
-                  "$63,542",
-                  "Malawi",
-                  "Feldkirchen in Kärnten"
-                ],
-                ["6", "Mason Porter", "$78,615", "Chile", "Gloucester"]
-              ]}
-            />
-          </CardBody>
-        </Card>
-      </GridItem>
-    </GridContainer>
+ </GridContainer>
   );
 }
