@@ -30,7 +30,7 @@ export default function LoginScreen() {
           type: 'SET_CURRENT_USER',
           payload: resJSON.da
         });
-        history.replace('/home', resJSON.da.id);
+        history.replace('/home');
       })
       .catch(err => {console.log(err)})
   } 
