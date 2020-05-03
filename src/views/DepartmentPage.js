@@ -34,6 +34,15 @@ const styles = {
     width: '100%',
     marginBottom: '10px'
   },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: 'white',
+    boxShadow: 5,
+    padding: 20,
+    allignItems: 'center',
+    justifyContent: 'center',
+  },
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
       color: "rgba(255,255,255,.62)",
@@ -45,15 +54,6 @@ const styles = {
     "& a,& a:hover,& a:focus": {
       color: "#FFFFFF"
     }
-  },
-  paper: {
-    position: 'absolute',
-    width: 400,
-    backgroundColor: 'white',
-    boxShadow: 5,
-    padding: 20,
-    allignItems: 'center',
-    justifyContent: 'center',
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -193,23 +193,24 @@ export default function DepartmentPage() {
       })
   }
 
-  const handleDeleteButtonClick = () => {{
-    const data = JSON.stringify({ id: deId, name, desc, root, companyId: user.companyId })
-    fetch(`http://localhost:3001/departments/delete/`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: data
-    })
-      .then(res => {
-        if (res.status === 204) {
-          setAddModalOpen(false);
-          window.location.reload();
-        }
+  const handleDeleteButtonClick = () => {
+    {
+      const data = JSON.stringify({ id: deId, name, desc, root, companyId: user.companyId })
+      fetch(`http://localhost:3001/departments/delete/`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: data
       })
-  }
+        .then(res => {
+          if (res.status === 204) {
+            setAddModalOpen(false);
+            window.location.reload();
+          }
+        })
+    }
   }
 
   if (loading) return <Loading />
@@ -308,7 +309,7 @@ export default function DepartmentPage() {
           <form>
             <TextField disabled value={name} onChange={(value) => setName(value.target.value)} className={classes.depInput} label="Нэр" variant="outlined" />
             <TextField disabled value={desc} onChange={(value) => setDesc(value.target.value)} className={classes.depInput} label="Тайлбар" variant="outlined" />
-            <TextField 
+            <TextField
               disabled
               value={root}
               onChange={(value) => setRoot(value.target.value)}
