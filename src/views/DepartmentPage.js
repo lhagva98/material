@@ -161,7 +161,7 @@ export default function DepartmentPage() {
   }
 
   const handleSaveButtonClick = () => {
-    const data = JSON.stringify({ id:deI, name, desc, root, companyId: user.companyId })
+    const data = JSON.stringify({ id:deId, name, desc, root, companyId: user.companyId })
     fetch(`http://localhost:3001/departments/edit/`, {
       method: 'POST',
       headers: {
@@ -260,7 +260,6 @@ export default function DepartmentPage() {
           </Button>
         </div>
       </Modal>
-      
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
