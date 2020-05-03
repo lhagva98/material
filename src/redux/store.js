@@ -3,8 +3,37 @@ import logger from 'redux-logger';
 
 import rootReducer from './root-reducer';
 
+function saveToLocalStorage(state) {
+    try {
+        const serializedState = JSON.stringify(state);
+        sessionStorage.setItem('state', serializedState)
+    } catch(e) {
+        console.log(e)
+    }
+}
+
+function loadFromLocalStorage(state) {
+    try {
+        const serializedState = sessionStorage.getItem('state');
+        if (serializedState === null) return undefined;
+        return JSON.parse(serializedState)
+    } catch(e) {
+        console.log(e)
+        return undefined
+    }
+}
+
+const persistedState = loadFromLocalStorage();
+
+
 const middlewares = [logger];
 
-const store = createStore(rootReducer, applyMiddleware(...middlewares));
+const store = createStore(
+    rootReducer, 
+    persistedState,
+    applyMiddleware(...middlewares)
+);
+
+store.subscribe(()=> saveToLocalStorage(store.getState()));
 
 export default store;

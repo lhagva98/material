@@ -7,6 +7,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+
+import Button from "components/CustomButtons/Button.js";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/tableStyle.js";
 
@@ -14,7 +16,7 @@ const useStyles = makeStyles(styles);
 
 export default function CustomTable(props) {
   const classes = useStyles();
-  const { tableHead, tableData, tableHeaderColor } = props;
+  const { tableHead, tableData, tableHeaderColor, editButtonHandler } = props;
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -35,16 +37,24 @@ export default function CustomTable(props) {
           </TableHead>
         ) : null}
         <TableBody>
-          {tableData.map((prop, key) => {
+          {tableData.map((propd, key) => {
             return (
               <TableRow key={key} className={classes.tableBodyRow}>
-                {prop.map((prop, key) => {
+                {propd.map((prop, key) => {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
-                      {prop}
+                      {propd.length-1 === key ?
+                          <Button onClick={editButtonHandler(prop)} color="warning" size="sm" round >
+                            Өөрчлөх
+                          </Button> : prop}
                     </TableCell>
                   );
                 })}
+
+                <TableCell
+                  className={classes.tableCell + " " + classes.tableHeadCell}
+                >
+                </TableCell>
               </TableRow>
             );
           })}

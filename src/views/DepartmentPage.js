@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Modal, TextField, MenuItem } from '@material-ui/core';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
+import Table from "./EPES-components/EPEStable.js";
 import Card from "components/Card/Card.js";
 import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+
+import Loading from './Loading';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -80,12 +83,16 @@ export default function DepartmentPage() {
   const [department, setDepartmant] = useState();
   const [DArray, setDarray] = useState([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
   const [root, setRoot] = useState('')
 
+  const user = useSelector(state => state.user.currentUser);
+
   useEffect(() => {
-    fetch(`http://localhost:3001/departments/findAll`, {
+    console.log("*******", user);
+    fetch(`http://localhost:3001/departments/findAll/${user.companyId}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -98,7 +105,13 @@ export default function DepartmentPage() {
         var ddata = resJSON.dep;
 
         var darray = Object.keys(ddata).map(key => {
-          return [ddata[key].name, ddata[key].desc, ddata[key].root];
+          if (ddata[key].head)
+            if (ddata[key].head.name !== 0) {
+              var cname = ddata[key].head.name;
+            } else {
+              var cname = '';
+            }
+          return [ddata[key].name, ddata[key].desc, cname, ddata[key].id];
         });
 
         setDarray(darray);
@@ -114,7 +127,7 @@ export default function DepartmentPage() {
   }, []);
 
   const handleAddDepClick = () => {
-    const data = JSON.stringify({ name, desc, root })
+    const data = JSON.stringify({ name, desc, root, companyId: user.companyId })
     fetch(`http://localhost:3001/departments/add`, {
       method: 'POST',
       headers: {
@@ -123,21 +136,69 @@ export default function DepartmentPage() {
       },
       body: data
     })
-    .then(res => {
-      if(res.status === 204) {
-        setAddModalOpen(false);
-        window.location.reload();
-      }
-    })
+      .then(res => {
+        if (res.status === 204) {
+          setAddModalOpen(false);
+          window.location.reload();
+        }
+      })
   }
 
-  if (loading) return null;
+  const editButtonHandler = (id) => {
+    console.log(id);
+    if (department[id]) {
+      setName(department[id].name);
+      setDesc(department[id].desc);
+      setRoot(department[id].root);
+      setEditModalOpen(true);
+    }
+  }
+
+  if (loading) return <Loading />
 
   return (
     <GridContainer>
       <Modal
         open={addModalOpen}
         onClose={() => setAddModalOpen(false)}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <h2>Хэлтэс нэмэх</h2>
+          <form>
+            <TextField value={name} onChange={(value) => setName(value.target.value)} className={classes.depInput} label="Нэр" variant="outlined" />
+            <TextField value={desc} onChange={(value) => setDesc(value.target.value)} className={classes.depInput} label="Тайлбар" variant="outlined" />
+            <TextField
+              value={root}
+              onChange={(value) => setRoot(value.target.value)}
+              className={classes.depInput}
+              select
+              label="Толгой хэлтэс"
+              variant="outlined"
+              helperText="Сонгоно уу?"
+            >
+              {department && department.map((d) => (
+                <MenuItem key={d.id} value={d.id}>
+                  {d.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </form>
+
+          <Button
+            onClick={handleAddDepClick}
+            color="success"
+            size="sm"
+            round
+          >
+            Нэмэх
+          </Button>
+        </div>
+      </Modal>
+      <Modal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
@@ -193,8 +254,9 @@ export default function DepartmentPage() {
             </Button>
             <Table
               styles
+              editButtonHandler={editButtonHandler}
               tableHeaderColor="primary"
-              tableHead={["Нэр", "Тайлбайр", "Толгой Хэлтэс"]}
+              tableHead={["Нэр", "Тайлбайр", "Толгой Хэлтэс", '']}
               tableData={DArray}
             />
           </CardBody>

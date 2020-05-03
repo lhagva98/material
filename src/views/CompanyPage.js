@@ -46,10 +46,10 @@ export default function CompanyPage() {
 
   const [company, setCompany] = useState();
   
-  const user = useSelector( state => state.user.user );
+  const user = useSelector( state => state.user.currentUser );
 
   useEffect(() => {
-    const companyId = 1;
+    const companyId = user.companyId;
     fetch(`http://localhost:3001/companies/find/${companyId}`, {
       method: 'GET',
       headers: {
