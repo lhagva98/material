@@ -44,7 +44,7 @@ export default function CustomTable(props) {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
                       {propd.length-1 === key ?
-                          <Button onClick={editButtonHandler(prop)} color="warning" size="sm" round >
+                          <Button onClick={() => editButtonHandler(prop)} color="warning" size="sm" round >
                             Өөрчлөх
                           </Button> : prop}
                     </TableCell>

@@ -6,13 +6,13 @@ import { Modal, TextField, MenuItem } from '@material-ui/core';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "./EPES-components/EPEStable.js";
 import Card from "components/Card/Card.js";
 import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 import Loading from './Loading';
+import Table from "./EPES-components/EPEStable.js";
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -84,14 +84,14 @@ export default function DepartmentPage() {
   const [DArray, setDarray] = useState([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [name, setName] = useState('')
-  const [desc, setDesc] = useState('')
-  const [root, setRoot] = useState('')
+  const [deId, setdeId] = useState('');
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const [root, setRoot] = useState('');
 
   const user = useSelector(state => state.user.currentUser);
 
   useEffect(() => {
-    console.log("*******", user);
     fetch(`http://localhost:3001/departments/findAll/${user.companyId}`, {
       method: 'GET',
       headers: {
@@ -119,7 +119,7 @@ export default function DepartmentPage() {
         setLoading(false);
       },
         (err) => {
-          console.log("DEPARTMENT_FETCH_ERR_")
+          console.log("DEPARTMENT_FETCH_ERR_", err)
         })
       .catch(err => { console.log(err) })
 
@@ -144,14 +144,38 @@ export default function DepartmentPage() {
       })
   }
 
-  const editButtonHandler = (id) => {
-    console.log(id);
-    if (department[id]) {
-      setName(department[id].name);
-      setDesc(department[id].desc);
-      setRoot(department[id].root);
+  function editButtonHandler(id) {
+    const index = department.filter(dep => {
+      if (dep.id === id) return (dep)
+    })
+
+    console.log("idididi", id, index);
+
+    if (index[0]) {
+      setdeId(index[0].id);
+      setName(index[0].name);
+      setDesc(index[0].desc);
+      setRoot(index[0].root);
       setEditModalOpen(true);
     }
+  }
+
+  const handleSaveButtonClick = () => {
+    const data = JSON.stringify({ id:deI, name, desc, root, companyId: user.companyId })
+    fetch(`http://localhost:3001/departments/edit/`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: data
+    })
+      .then(res => {
+        if (res.status === 204) {
+          setAddModalOpen(false);
+          window.location.reload();
+        }
+      })
   }
 
   if (loading) return <Loading />
@@ -203,7 +227,7 @@ export default function DepartmentPage() {
         aria-describedby="simple-modal-description"
       >
         <div style={modalStyle} className={classes.paper}>
-          <h2>Хэлтэс нэмэх</h2>
+          <h2>Хэлтэс өөрчлөх</h2>
           <form>
             <TextField value={name} onChange={(value) => setName(value.target.value)} className={classes.depInput} label="Нэр" variant="outlined" />
             <TextField value={desc} onChange={(value) => setDesc(value.target.value)} className={classes.depInput} label="Тайлбар" variant="outlined" />
@@ -216,24 +240,27 @@ export default function DepartmentPage() {
               variant="outlined"
               helperText="Сонгоно уу?"
             >
-              {department && department.map((d) => (
-                <MenuItem key={d.id} value={d.id}>
-                  {d.name}
-                </MenuItem>
-              ))}
+              {department && department.map((d) => {if(deId !== d.id) {
+                return(
+                  <MenuItem key={d.id} value={d.id}>
+                    {d.name}
+                  </MenuItem>
+                )
+              }})} 
             </TextField>
           </form>
 
           <Button
-            onClick={handleAddDepClick}
+            onClick={handleSaveButtonClick}
             color="success"
             size="sm"
             round
           >
-            Нэмэх
+            Хадгалах
           </Button>
         </div>
       </Modal>
+      
       <GridItem xs={12} sm={12} md={12}>
         <Card>
           <CardHeader color="primary">
@@ -243,7 +270,13 @@ export default function DepartmentPage() {
             </p>
           </CardHeader>
           <CardBody>
-            <Button onClick={() => setAddModalOpen(true)} color="success" size="sm" round>
+            <Button onClick={() => {
+              setdeId('');
+              setName('');
+              setDesc('');
+              setRoot('');
+              setAddModalOpen(true)
+            }} color="success" size="sm" round>
               Нэмэх
             </Button>
             <Button color="warning" size="sm" round>
