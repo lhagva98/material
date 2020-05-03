@@ -196,6 +196,22 @@ export default function EmployeePage() {
               label="Нэр" 
               variant="outlined" 
             />
+            <TextField 
+              value={seEmp.email} 
+              onChange={(value) => setSeEmp({...setSeEmp, email: value.target.value})} 
+              className={classes.depInput} 
+              label="Нэр" 
+              variant="outlined" 
+            />
+            <TextField 
+              value={seEmp.departmentId} 
+              onChange={(value) => setSeEmp({...setSeEmp, departmentId: value.target.value})} 
+              className={classes.depInput} 
+              select
+              label="Нэр" 
+              variant="outlined" 
+              helperText="Сонгоно уу?"
+            />
             {/* <TextField value={desc} onChange={(value) => setDesc(value.target.value)} className={classes.depInput} label="Тайлбар" variant="outlined" />
             <TextField
               value={root}
