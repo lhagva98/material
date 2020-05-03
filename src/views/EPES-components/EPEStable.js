@@ -16,7 +16,14 @@ const useStyles = makeStyles(styles);
 
 export default function CustomTable(props) {
   const classes = useStyles();
-  const { tableHead, tableData, tableHeaderColor, editButtonHandler } = props;
+  const {
+    tableHead,
+    tableData,
+    tableHeaderColor,
+    editButtonHandler,
+    deleteButtonHandler
+  } = props;
+
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
@@ -43,10 +50,15 @@ export default function CustomTable(props) {
                 {propd.map((prop, key) => {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
-                      {propd.length-1 === key ?
-                          <Button onClick={() => editButtonHandler(prop)} color="warning" size="sm" round >
-                            Өөрчлөх
-                          </Button> : prop}
+                      {propd.length - 1 === key ? <div>
+
+                        <Button onClick={() => editButtonHandler(prop)} color="warning" size="sm" round >
+                          Өөрчлөх
+                        </Button>
+                        <Button onClick={() => deleteButtonHandler(prop)} color="danger" size="sm" round >
+                          Устгах
+                        </Button>
+                      </div> : prop}
                     </TableCell>
                   );
                 })}

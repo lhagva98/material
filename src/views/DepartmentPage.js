@@ -84,6 +84,7 @@ export default function DepartmentPage() {
   const [DArray, setDarray] = useState([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deId, setdeId] = useState('');
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
@@ -149,8 +150,6 @@ export default function DepartmentPage() {
       if (dep.id === id) return (dep)
     })
 
-    console.log("idididi", id, index);
-
     if (index[0]) {
       setdeId(index[0].id);
       setName(index[0].name);
@@ -160,8 +159,24 @@ export default function DepartmentPage() {
     }
   }
 
+  function deleteButtonHandler(id) {
+    const index = department.filter(dep => {
+      if (dep.id === id) return (dep)
+    })
+
+    console.log("idididi", id, index);
+
+    if (index[0]) {
+      setdeId(index[0].id);
+      setName(index[0].name);
+      setDesc(index[0].desc);
+      setRoot(index[0].root);
+      setDeleteModalOpen(true);
+    }
+  }
+
   const handleSaveButtonClick = () => {
-    const data = JSON.stringify({ id:deId, name, desc, root, companyId: user.companyId })
+    const data = JSON.stringify({ id: deId, name, desc, root, companyId: user.companyId })
     fetch(`http://localhost:3001/departments/edit/`, {
       method: 'POST',
       headers: {
@@ -176,6 +191,25 @@ export default function DepartmentPage() {
           window.location.reload();
         }
       })
+  }
+
+  const handleDeleteButtonClick = () => {{
+    const data = JSON.stringify({ id: deId, name, desc, root, companyId: user.companyId })
+    fetch(`http://localhost:3001/departments/delete/`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: data
+    })
+      .then(res => {
+        if (res.status === 204) {
+          setAddModalOpen(false);
+          window.location.reload();
+        }
+      })
+  }
   }
 
   if (loading) return <Loading />
@@ -240,13 +274,15 @@ export default function DepartmentPage() {
               variant="outlined"
               helperText="Сонгоно уу?"
             >
-              {department && department.map((d) => {if(deId !== d.id) {
-                return(
-                  <MenuItem key={d.id} value={d.id}>
-                    {d.name}
-                  </MenuItem>
-                )
-              }})} 
+              {department && department.map((d) => {
+                if (deId !== d.id) {
+                  return (
+                    <MenuItem key={d.id} value={d.id}>
+                      {d.name}
+                    </MenuItem>
+                  )
+                }
+              })}
             </TextField>
           </form>
 
@@ -257,6 +293,57 @@ export default function DepartmentPage() {
             round
           >
             Хадгалах
+          </Button>
+        </div>
+      </Modal>
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <h2>Хэлтэс устгах</h2>
+          <h4>Та дараах хэлтэсийг устгахдаа итгэлтэй байна уу?</h4>
+          <form>
+            <TextField disabled value={name} onChange={(value) => setName(value.target.value)} className={classes.depInput} label="Нэр" variant="outlined" />
+            <TextField disabled value={desc} onChange={(value) => setDesc(value.target.value)} className={classes.depInput} label="Тайлбар" variant="outlined" />
+            <TextField 
+              disabled
+              value={root}
+              onChange={(value) => setRoot(value.target.value)}
+              className={classes.depInput}
+              select
+              label="Толгой хэлтэс"
+              variant="outlined"
+              helperText="Сонгоно уу?"
+            >
+              {department && department.map((d) => {
+                if (deId !== d.id) {
+                  return (
+                    <MenuItem key={d.id} value={d.id}>
+                      {d.name}
+                    </MenuItem>
+                  )
+                }
+              })}
+            </TextField>
+          </form>
+
+          <Button
+            onClick={handleDeleteButtonClick}
+            color="danger"
+            size="sm"
+            round
+          >
+            Устгах
+          </Button>
+          <Button
+            onClick={() => setDeleteModalOpen(false)}
+            size="sm"
+            round
+          >
+            Болих
           </Button>
         </div>
       </Modal>
@@ -278,15 +365,10 @@ export default function DepartmentPage() {
             }} color="success" size="sm" round>
               Нэмэх
             </Button>
-            <Button color="warning" size="sm" round>
-              Өөрчлөх
-            </Button>
-            <Button color="danger" size="sm" round>
-              Устгах
-            </Button>
             <Table
               styles
               editButtonHandler={editButtonHandler}
+              deleteButtonHandler={deleteButtonHandler}
               tableHeaderColor="primary"
               tableHead={["Нэр", "Тайлбайр", "Толгой Хэлтэс", '']}
               tableData={DArray}
