@@ -16,6 +16,7 @@ import Loading from './Loading';
 
 
 import { employeeRoles } from '../constants';
+import Axios from "axios";
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -96,8 +97,10 @@ export default function EmployeePage() {
     email: '',
     departmentId: '',
     role: '',
-    password:''
+    password:'',
+    companyId:''
   });
+  const [department, setDepartment] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -106,45 +109,48 @@ export default function EmployeePage() {
   const user = useSelector(state => state.user.currentUser);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/employees/findAll/${user.companyId}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
+    Axios.get(`employees/findAll/${user.companyId}`)
+    .then( res => {
+      var ddata = res.data.emp;
+      var darray = Object.keys(ddata).map(key => {
+        if (ddata[key].department)
+          if (ddata[key].department.name !== 0) {
+            var cname = ddata[key].department.name;
+          } else {
+            var cname = '';
+          }
+        return [ddata[key].lastname, ddata[key].firstname, cname, employeeRoles[ddata[key].role - 1].name, ddata[key].id];
+      });
+      setEarray(darray);
+      setEdata(ddata);
+      setLoading(false);
+
+      setSeEmp({...seEmp, companyId: user.companyId});
     })
-      .then(res => res.json())
-      .then(resJSON => {
-        console.log("EMPLOYEE_FETCH_", resJSON);
-        var ddata = resJSON.emp;
+    .catch(err => { console.log('EMP_DATA_FETCH_', err) })
 
-        var darray = Object.keys(ddata).map(key => {
-          if (ddata[key].department)
-            if (ddata[key].department.name !== 0) {
-              var cname = ddata[key].department.name;
-            } else {
-              var cname = '';
-            }
-          return [ddata[key].lastname, ddata[key].firstname, cname, employeeRoles[ddata[key].role].name, ddata[key].id];
-        });
-
-        console.log(darray);
-        setEarray(darray);
-        setEdata(ddata);
-        setLoading(false);
-      },
-        (err) => {
-          console.log("DEPARTMENT_FETCH_ERR_", err)
-        })
-      .catch(err => { console.log(err) })
-
-
+    Axios.get(`departments/findAll/${user.companyId}`)
+    .then( res => {
+      setDepartment(res.data.dep);
+    })
+    .catch(err => { console.log('DEP_DATA_FETCH_', err) })
   }, []);
+
+  const addEmployeeClick = () => {
+    const data = JSON.stringify(seEmp)
+    
+
+    Axios.post('employees/add', seEmp)
+    .then(res => {
+      console.log(res);
+    })
+  }
 
   if (loading) return <Loading />
 
   return (
     <GridContainer>
+      {console.log(seEmp)}
       <Modal
         open={addModalOpen}
         onClose={() => setAddModalOpen(false)}
@@ -156,81 +162,89 @@ export default function EmployeePage() {
           <form>
             <TextField 
               value={seEmp.lastname} 
-              onChange={(value) => setSeEmp({...setSeEmp, last: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, lastname: value.target.value})} 
               className={classes.depInput} 
               label="Овог" 
               variant="outlined" 
             />
             <TextField 
               value={seEmp.firstname} 
-              onChange={(value) => setSeEmp({...setSeEmp, firstname: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, firstname: value.target.value})} 
               className={classes.depInput} 
               label="Нэр" 
               variant="outlined" 
             />
             <TextField 
               value={seEmp.username} 
-              onChange={(value) => setSeEmp({...setSeEmp, username: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, username: value.target.value})} 
               className={classes.depInput} 
-              label="Нэр" 
+              label="Хэрэглэгчийн нэр" 
               variant="outlined" 
             />
             <TextField 
-              value={seEmp.dateOfBirth} 
-              onChange={(value) => setSeEmp({...setSeEmp, dateOfBirth: value.target.value})} 
+              value={seEmp.role} 
+              onChange={(value) => setSeEmp({...seEmp, role: value.target.value})} 
               className={classes.depInput} 
-              label="Нэр" 
+              select
+              label="Хэрэглэгчийн түвшин" 
               variant="outlined" 
+            >
+              {employeeRoles && employeeRoles.map((d) => (
+                <MenuItem key={d.id} value={d.id}>
+                  {d.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField 
+              value={seEmp.dateOfBirth} 
+              type="date"
+              onChange={(value) => setSeEmp({...seEmp, dateOfBirth: value.target.value})} 
+              className={classes.depInput} 
+              label="Төрсөн он сар өдөр" 
+              variant="outlined" 
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
             <TextField 
               value={seEmp.registrationNo} 
-              onChange={(value) => setSeEmp({...setSeEmp, registrationNo: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, registrationNo: value.target.value})} 
               className={classes.depInput} 
-              label="Нэр" 
+              label="Регистрийн дугаар" 
               variant="outlined" 
             />
             <TextField 
               value={seEmp.phoneNumber} 
-              onChange={(value) => setSeEmp({...setSeEmp, phoneNumber: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, phoneNumber: value.target.value})} 
               className={classes.depInput} 
-              label="Нэр" 
+              label="Утасны дугаар" 
               variant="outlined" 
             />
             <TextField 
               value={seEmp.email} 
-              onChange={(value) => setSeEmp({...setSeEmp, email: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, email: value.target.value})} 
               className={classes.depInput} 
-              label="Нэр" 
+              label="И-мэйл" 
               variant="outlined" 
             />
             <TextField 
               value={seEmp.departmentId} 
-              onChange={(value) => setSeEmp({...setSeEmp, departmentId: value.target.value})} 
+              onChange={(value) => setSeEmp({...seEmp, departmentId: value.target.value})} 
               className={classes.depInput} 
               select
-              label="Нэр" 
+              label="Хэлтэс" 
               variant="outlined" 
-              helperText="Сонгоно уу?"
-            />
-            {/* <TextField value={desc} onChange={(value) => setDesc(value.target.value)} className={classes.depInput} label="Тайлбар" variant="outlined" />
-            <TextField
-              value={root}
-              onChange={(value) => setRoot(value.target.value)}
-              className={classes.depInput}
-              select
-              label="Толгой хэлтэс"
-              variant="outlined"
-              helperText="Сонгоно уу?"
             >
               {department && department.map((d) => (
                 <MenuItem key={d.id} value={d.id}>
                   {d.name}
                 </MenuItem>
               ))}
-            </TextField> */}
+            </TextField>
           </form>
 
           <Button
+            onClick={addEmployeeClick}
             color="success"
             size="sm"
             round

@@ -6,6 +6,8 @@ import { Provider } from 'react-redux';
 
 import store from './redux/store';
 
+import Axios from "./Axios.js";
+
 // core components
 import Admin from "layouts/Admin.js";
 import LoginScreen from 'layouts/LoginScreen';
@@ -15,6 +17,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 
 const hist = createBrowserHistory();
+
+Axios();
 
 ReactDOM.render(
   <Provider store={store}>
