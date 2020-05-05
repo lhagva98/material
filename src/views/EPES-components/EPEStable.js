@@ -50,14 +50,16 @@ export default function CustomTable(props) {
                 {propd.map((prop, key) => {
                   return (
                     <TableCell className={classes.tableCell} key={key}>
-                      {propd.length - 1 === key ? <div>
-
+                      {propd.length - 1 === key ? 
+                      <div>
+                        {editButtonHandler ? 
                         <Button onClick={() => editButtonHandler(prop)} color="warning" size="sm" round >
                           Өөрчлөх
-                        </Button>
+                        </Button> : null}
+                        {deleteButtonHandler ? 
                         <Button onClick={() => deleteButtonHandler(prop)} color="danger" size="sm" round >
                           Устгах
-                        </Button>
+                        </Button> : null}
                       </div> : prop}
                     </TableCell>
                   );

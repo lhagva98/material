@@ -12,3 +12,18 @@ export const employeeRoles = [
         name:"Ажилтан",
     },
 ]
+
+export const employeeInitial = {
+    id: '',
+    username: '',
+    lastname: '',
+    firstname: '',
+    dateOfBirth: new Date(),
+    registrationNo: '',
+    phoneNumber: '',
+    email: '',
+    departmentId: '',
+    role: '',
+    password: '',
+    companyId: ''
+  }
