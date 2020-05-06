@@ -31,7 +31,7 @@ export const employeeInitial = {
 export const planInitial = {
     id:'', 
     name: '',
-    startDate: new Date('2020-02-02'),
-    endDate: new Date('2020-02-02'),
+    startDate: '',
+    endDate: '',
     file: ''
 }

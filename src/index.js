@@ -15,6 +15,7 @@ import Home from './layouts/Home';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "assets/css/material-dashboard-react.css?v=1.8.0";
+import "react-datepicker/dist/react-datepicker.css";
 
 const hist = createBrowserHistory();
 

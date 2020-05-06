@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import { useSelector } from "react-redux";
+
+import { storage } from '../firebase';
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, MenuItem } from '@material-ui/core';
@@ -52,7 +57,49 @@ const useStyles = makeStyles(styles);
 export default function PlanPage() {
   const classes = useStyles();
 
+  const [file, setFile] = useState();
+  const [planData, setPlanData] = useState();
   const [plan, setPlan] = useState(planInitial);
+  const [progress, setProgress] = useState(0);
+
+  const user = useSelector(state => state.user.currentUser);
+
+  useEffect(() => {
+    Axios.get(`/plans/findAll/${user.companyId}`)
+    .then( res => {
+      setPlanData(res.plan);
+    })
+    .catch(err => { console.log('PLAN_DATA_FETCH_', err) })
+  }, [])
+
+  const addPlanClick = () => {
+    const date = new Date().toISOString().substring(0, 19);
+    const fileRef = `uploads/file-${date}-${file.name}`;
+    const uploadTask = storage.ref(fileRef).put(file);
+
+
+    uploadTask.on('state_changed',
+      (snap) => {
+        const percent = Math.round((snap.bytesTransferred / snap.totalBytes) * 100)
+        setProgress(percent);
+      },
+      (err) => {
+        console.log("PLAN_FILE_UPLOAD_", err)
+      },
+      () => {
+        storage.ref(fileRef).getDownloadURL()
+          .then(url => {
+            const data = { ...plan, file: url}
+            Axios.post('plans/add', data)
+            .then(res => {
+              if (res.status === 204) {}
+                // window.location.reload();
+            })
+            .catch(err => { console.log('EMP_ADD_', err) })
+          })
+      }
+    )
+  }
 
   return (
     <GridContainer>
@@ -98,7 +145,7 @@ export default function PlanPage() {
             </p> */}
           </CardHeader>
           <CardBody>
-            <form>
+            <form encType="multipart/form-data">
               <TextField
                 value={plan.name}
                 onChange={value => { setPlan({ ...plan, name: value.target.value }) }}
@@ -130,8 +177,7 @@ export default function PlanPage() {
               />
               <TextField
                 type="file"
-                value={plan.file}
-                onChange={value => { setPlan({ ...plan, files: value.target.value }) }}
+                onChange={value => setFile(value.target.files[0])}
                 className={classes.depInput}
                 label="Файл хавсаргах"
                 variant="outlined"
@@ -140,6 +186,7 @@ export default function PlanPage() {
                 }}
               />
             </form>
+            <Button onClick={addPlanClick}>Nemeh</Button>
           </CardBody>
         </Card>
       </GridItem>
