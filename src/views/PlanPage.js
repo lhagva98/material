@@ -68,6 +68,8 @@ export default function PlanPage() {
     Axios.get(`/plans/findAll/${user.companyId}`)
     .then( res => {
       setPlanData(res.plan);
+      console.log('PLAN_DATA_FETCH_', res);
+      
     })
     .catch(err => { console.log('PLAN_DATA_FETCH_', err) })
   }, [])
@@ -89,7 +91,12 @@ export default function PlanPage() {
       () => {
         storage.ref(fileRef).getDownloadURL()
           .then(url => {
-            const data = { ...plan, file: url}
+            const data = { 
+              ...plan, 
+              fileId: url, 
+              ownerId: user.id, 
+              companyId: user.companyId
+            }
             Axios.post('plans/add', data)
             .then(res => {
               if (res.status === 204) {}
