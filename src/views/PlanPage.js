@@ -59,6 +59,7 @@ export default function PlanPage() {
 
   const [file, setFile] = useState();
   const [planData, setPlanData] = useState();
+  const [planArray, setPlanArray] = useState([]);
   const [plan, setPlan] = useState(planInitial);
   const [progress, setProgress] = useState(0);
 
@@ -66,12 +67,18 @@ export default function PlanPage() {
 
   useEffect(() => {
     Axios.get(`/plans/findAll/${user.companyId}`)
-    .then( res => {
-      setPlanData(res.plan);
-      console.log('PLAN_DATA_FETCH_', res);
-      
-    })
-    .catch(err => { console.log('PLAN_DATA_FETCH_', err) })
+      .then(res => {
+        setPlanData(res.data.plan);
+        console.log('PLAN_DATA_FETCH_', res);
+
+        var ddata = res.data.plan;
+        var darray = Object.keys(ddata).map(key => {
+          const date = `${ddata[key].startDate.substring(0, 6)} - ${ddata[key].endDate.substring(0, 6)}`
+          return [ddata[key].id, date, ddata[key].name, ddata[key].id]
+        })
+        setPlanArray(darray);
+      })
+      .catch(err => { console.log('PLAN_DATA_FETCH_', err) })
   }, [])
 
   const addPlanClick = () => {
@@ -91,18 +98,18 @@ export default function PlanPage() {
       () => {
         storage.ref(fileRef).getDownloadURL()
           .then(url => {
-            const data = { 
-              ...plan, 
-              fileId: url, 
-              ownerId: user.id, 
+            const data = {
+              ...plan,
+              fileId: url,
+              ownerId: user.id,
               companyId: user.companyId
             }
             Axios.post('plans/add', data)
-            .then(res => {
-              if (res.status === 204) {}
-                // window.location.reload();
-            })
-            .catch(err => { console.log('EMP_ADD_', err) })
+              .then(res => {
+                if (res.status === 204)
+                  window.location.reload();
+              })
+              .catch(err => { console.log('EMP_ADD_', err) })
           })
       }
     )
@@ -110,7 +117,7 @@ export default function PlanPage() {
 
   return (
     <GridContainer>
-      <GridItem xs={6} sm={12} md={6}>
+      <GridItem xs={12} sm={12} md={8}>
         <Card>
           <CardHeader color="primary">
             <h4 className={classes.cardTitleWhite}>Төлөвлөгөө</h4>
@@ -134,16 +141,12 @@ export default function PlanPage() {
             <Table
               tableHeaderColor="primary"
               tableHead={["№", "Хугацаа", "Төлөвлөгөө", "Төлөв"]}
-              tableData={[
-                ["1", "2019.01 - 2019.12", "Жилийн төлөвлөгөө", "Дууссан"],
-                ["2", "2020.01 - 2020.12", "Жилийн төлөвлөгөө", "Гүйцэтгэж байгаа"],
-                ["3", "2020.01 - 2020.09", "COVID-19-той холбоотой үйл ажиллагааны өөрчлөлтийн төлөвлөгөө", "Гүйцэтгэж байгаа"]
-              ]}
+              tableData={planArray}
             />
           </CardBody>
         </Card>
       </GridItem>
-      <GridItem xs={6} sm={12} md={6}>
+      <GridItem xs={12} sm={12} md={4}>
         <Card>
           <CardHeader color="primary">
             <h4 className={classes.cardTitleWhite}>Төлөвлөгөө нэмэх</h4>
