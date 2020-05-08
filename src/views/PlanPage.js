@@ -6,7 +6,7 @@ import { storage } from '../firebase';
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, MenuItem } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";

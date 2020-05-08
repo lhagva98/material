@@ -1,15 +1,15 @@
 export const employeeRoles = [
     {
         id: "1",
-        name:"Захирал",
+        name: "Захирал",
     },
     {
         id: "2",
-        name:"Менежер",
+        name: "Менежер",
     },
     {
         id: "3",
-        name:"Ажилтан",
+        name: "Ажилтан",
     },
 ]
 
@@ -26,12 +26,48 @@ export const employeeInitial = {
     role: '',
     password: '',
     companyId: ''
-  }
+}
 
 export const planInitial = {
-    id:'', 
+    id: '',
     name: '',
     startDate: '',
     endDate: '',
     file: ''
 }
+
+export const assignmentInitial = {
+    id: '',
+    evaluationType: '',
+    act: '',
+    capital: '',
+    currentSituation: '',
+    requirement: '',
+    scope: '',
+    startDate: '',
+    endDate: '',
+
+}
+
+export const requirementInitial = [
+    {
+        id: 0,
+        title: 'Бүтээгдэхүүн нь чанарын шаардлага хангасан байна.',
+        percent: 25,
+    },
+    {
+        id: 1,
+        title: 'Тэргэл агаа хамгийн гоё кофе хийж өгсөн байна.',
+        percent: 25,
+    },
+    {
+        id: 2,
+        title: 'Боогий ах UFC дээр хожигдсон байна.',
+        percent: 25,
+    },
+    {
+        id: 3,
+        title: 'Бүгдээрээ маргааш бичлэгээ дуусгана.',
+        percent: 25,
+    },
+]

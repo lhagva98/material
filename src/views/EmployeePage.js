@@ -90,8 +90,8 @@ export default function EmployeePage() {
   const [department, setDepartment] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [viewModalOpen, setViewModalOpen] = useState(false);
+  // const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  // const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const user = useSelector(state => state.user.currentUser);
 
@@ -100,11 +100,12 @@ export default function EmployeePage() {
       .then(res => {
         var ddata = res.data.emp;
         var darray = Object.keys(ddata).map(key => {
+          var cname = '';
           if (ddata[key].department)
             if (ddata[key].department.name !== 0) {
-              var cname = ddata[key].department.name;
+              cname = ddata[key].department.name;
             } else {
-              var cname = '';
+              cname = '';
             }
           return [ddata[key].lastname, ddata[key].firstname, cname, employeeRoles[ddata[key].role - 1].name, ddata[key].id];
         });

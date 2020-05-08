@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import './LoginStyles.scss'
-import { setTextRange } from 'typescript';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('user1');
   const [password, setPassword] = useState('');
 
-  const user = useSelector( state => state.user);
   const dispatch = useDispatch();
 
   let history = useHistory();
@@ -38,7 +36,7 @@ export default function LoginScreen() {
   return (
     <div className="body text-center">
       <div className="form-signin">
-        <img className="mb-4" src={require('../assets/user.png')} width="72" height="72" />
+        <img className="mb-4" src={require('../assets/user.png')} alt="..." width="72" height="72" />
         <h1 className="h3 mb-3 font-weight-normal">Нэвтрэх</h1>
         <label htmlFor="emailinput" className="sr-only">Хэрэглэгчийн нэр</label>
         <input 

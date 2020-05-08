@@ -106,11 +106,12 @@ export default function DepartmentPage() {
         var ddata = resJSON.dep;
 
         var darray = Object.keys(ddata).map(key => {
+          var cname = '';
           if (ddata[key].head)
             if (ddata[key].head.name !== 0) {
-              var cname = ddata[key].head.name;
+              cname = ddata[key].head.name;
             } else {
-              var cname = '';
+              cname = '';
             }
           return [ddata[key].name, ddata[key].desc, cname, ddata[key].id];
         });
@@ -123,7 +124,6 @@ export default function DepartmentPage() {
           console.log("DEPARTMENT_FETCH_ERR_", err)
         })
       .catch(err => { console.log(err) })
-
 
   }, []);
 
@@ -195,7 +195,14 @@ export default function DepartmentPage() {
 
   const handleDeleteButtonClick = () => {
     {
-      const data = JSON.stringify({ id: deId, name, desc, root, companyId: user.companyId })
+      const data = JSON.stringify({ 
+        id: deId, 
+        name, 
+        desc, 
+        root, 
+        companyId: user.companyId 
+      });
+      
       fetch(`http://localhost:3001/departments/delete/`, {
         method: 'POST',
         headers: {

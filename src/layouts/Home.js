@@ -47,9 +47,6 @@ export default function Home({ ...rest }) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   // states and functions
-  const [image, setImage] = React.useState(bgImage);
-  const [color, setColor] = React.useState("blue");
-  const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const user = useSelector( state => state.user.user);
@@ -90,10 +87,10 @@ export default function Home({ ...rest }) {
         routes={routes}
         logoText={"Үнэлгээний систем"}
         logo={logo}
-        image={image}
+        image={bgImage}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
-        color={color}
+        color={"blue"}
         {...rest}
       />
       <div className={classes.mainPanel} ref={mainPanel}>
