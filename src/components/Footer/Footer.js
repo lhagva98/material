@@ -42,14 +42,7 @@ export default function Footer(props) {
         <p className={classes.right}>
           <span>
             &copy; {1900 + new Date().getYear()}{" "}
-            <a
-              href="#"
-              target="_blank"
-              className={classes.a}
-            >
-              MGA Tech team
-            </a>
-            , made with great inspiration 
+            АЖИЛТНЫ АЖЛЫН ҮНЭЛГЭЭНИЙ СИСТЕМ, МУИС-ХШУИС Б.Тэргэл 
           </span>
         </p>
       </div>

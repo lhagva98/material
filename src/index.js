@@ -13,6 +13,10 @@ import Admin from "layouts/Admin.js";
 import LoginScreen from 'layouts/LoginScreen';
 import Home from './layouts/Home';
 
+import CEO from './layouts/CEO';
+import Manager from './layouts/Manager';
+import Employee from "./layouts/Employee";
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 import "react-datepicker/dist/react-datepicker.css";
@@ -27,6 +31,9 @@ ReactDOM.render(
       <Switch>
         <Route path="/admin" component={Admin} />
         <Route path="/home" component={Home} />
+        <Route path="/ceo" component={CEO} />
+        <Route path="/manager" component={Manager} />
+        <Route path="/employee" component={Employee} />
         <Route path="/login" component={LoginScreen} />
         <Redirect from="/" to="login" />
       </Switch>

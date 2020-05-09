@@ -24,11 +24,14 @@ export default function LoginScreen() {
     })
       .then(res => res.json())
       .then(resJSON => {
+        const user = resJSON.da;
         dispatch({
           type: 'SET_CURRENT_USER',
-          payload: resJSON.da
+          payload: user
         });
-        history.replace('/home');
+        if(user.role === "1") history.replace('/ceo');
+        if(user.role === "2") history.replace('/manager');
+        if(user.role === "3") history.replace('/employee');
       })
       .catch(err => {console.log(err)})
   } 
