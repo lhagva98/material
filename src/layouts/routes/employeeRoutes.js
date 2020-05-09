@@ -14,41 +14,6 @@ import AssignmentPage from 'views/AssignmentPage';
 
 const routes = [
     {
-        path: "/dashboard",
-        name: "Үзүүлэлт",
-        icon: Dashboard,
-        component: DashboardPage,
-        layout: "/employee"
-    },
-    {
-        path: "/company",
-        name: "Байгууллага",
-        icon: BusinessIcon,
-        component: CompanyPage,
-        layout: "/employee"
-    },
-    {
-        path: "/department",
-        name: "Хэлтэс",
-        icon: BusinessIcon,
-        component: DepartmentPage,
-        layout: "/employee"
-    },
-    {
-        path: "/employee",
-        name: "Ажилчид",
-        icon: GroupIcon,
-        component: EmployeePage,
-        layout: "/employee"
-    },
-    {
-        path: "/plan",
-        name: "Төлөвлөгөө",
-        icon: AssignmentIcon,
-        component: PlanPage,
-        layout: "/employee"
-    },
-    {
         path: "/assignment",
         name: "Ажлууд",
         icon: ListAltIcon,

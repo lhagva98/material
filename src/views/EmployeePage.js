@@ -125,7 +125,11 @@ export default function EmployeePage() {
   }, []);
 
   const addEmployeeClick = () => {
-    Axios.post('employees/add', seEmp)
+    const data = {
+      ...seEmp,
+      companyId: user.companyId
+    }
+    Axios.post('employees/add', data)
       .then(res => {
         if (res.status === 204)
           window.location.reload();
@@ -277,7 +281,7 @@ export default function EmployeePage() {
           </form>
 
           <Button
-            onClick={addEmployeeClick}
+            onClick={() => addEmployeeClick()}
             color="success"
             size="sm"
             round

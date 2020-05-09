@@ -18,7 +18,7 @@ export const employeeInitial = {
     username: '',
     lastname: '',
     firstname: '',
-    dateOfBirth: new Date(),
+    dateOfBirth: '',
     registrationNo: '',
     phoneNumber: '',
     email: '',

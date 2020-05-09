@@ -10,12 +10,12 @@ import { TextField } from '@material-ui/core';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 
+import Table from "./EPES-components/EPEStable.js";
 import { planInitial } from "../constants";
 
 const styles = {
@@ -115,6 +115,10 @@ export default function PlanPage() {
     )
   }
 
+  function fileViewButtonHandler(id) {
+    window.open(planData[id-1].fileId);
+  }
+
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={8}>
@@ -126,22 +130,11 @@ export default function PlanPage() {
             </p> */}
           </CardHeader>
           <CardBody>
-            <Button color="success" size="sm" round>
-              Нэмэх
-            </Button>
-            <Button color="warning" size="sm" round>
-              Өөрчлөх
-            </Button>
-            <Button color="danger" size="sm" round>
-              Устгах
-            </Button>
-            <Button color="default" size="sm" round>
-              Филтер
-            </Button>
             <Table
               tableHeaderColor="primary"
-              tableHead={["№", "Хугацаа", "Төлөвлөгөө", "Төлөв"]}
+              tableHead={["№", "Хугацаа", "Төлөвлөгөө", "Төлөв", '']}
               tableData={planArray}
+              fileViewButtonHandler={fileViewButtonHandler}
             />
           </CardBody>
         </Card>

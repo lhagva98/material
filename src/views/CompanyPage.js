@@ -8,10 +8,8 @@ import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 
-
-import { useSelector } from 'react-redux';
-
-
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCompany } from "../actions/fetch-actions";
 
 const styles = {
   cardCategoryWhite: {
@@ -36,30 +34,15 @@ const useStyles = makeStyles(styles);
 
 export default function CompanyPage() {
   const classes = useStyles();
-
-  const [company, setCompany] = useState();
   
+  const company = useSelector( state => state.company );
   const user = useSelector( state => state.user.currentUser );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const companyId = user.companyId;
-    fetch(`http://localhost:3001/companies/find/${companyId}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-    })
-      .then(res => res.json())
-      .then(resJSON => {
-        console.log("COMPANY_FETCH_", resJSON);
-        setCompany(resJSON.company);
-      },
-      (err) => {
-        console.log("COMPANY_FETCH_ERR_")
-      })
-      .catch(err => {console.log(err)})
+    dispatch(fetchCompany());
   }, []);
+
   return (
     <div>
       <GridContainer>

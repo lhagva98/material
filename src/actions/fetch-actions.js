@@ -4,7 +4,7 @@ import {
   FETCHING,
   FETCHING_DONE,
   FETCH_EMPLOYEES_SUCCESS,
-  FETCH_EMPLOYEES_FAILED,
+  FETCH_COMPANY_SUCCESS,
 } from '../types';
 
 import { employeeRoles } from "../constants";
@@ -42,5 +42,21 @@ export const fetchEmployee = () => {
         console.log('EMP_DATA_FETCH_', err);
         dispatch({ type: FETCHING_DONE });
       })
+  }
+}
+
+export const fetchCompany = () => {
+  return function (dispatch) {
+    dispatch({type: FETCHING});
+
+    Axios.get(`/companies/find/${user.companyId}`)
+    .then( res => {
+      dispatch({ type: FETCHING_DONE });
+      dispatch({type: FETCH_COMPANY_SUCCESS, payload: res.data.company});
+    })
+    .catch(err => {
+      console.log('COMPANY_DATA_FETCH_', err);
+      dispatch({ type: FETCHING_DONE });
+    })
   }
 }

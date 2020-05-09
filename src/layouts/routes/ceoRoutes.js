@@ -48,13 +48,6 @@ const routes = [
         component: PlanPage,
         layout: "/ceo"
     },
-    {
-        path: "/assignment",
-        name: "Ажлууд",
-        icon: ListAltIcon,
-        component: AssignmentPage,
-        layout: "/ceo"
-    },
 ]
 
 export default routes;
