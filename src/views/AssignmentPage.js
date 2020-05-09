@@ -11,7 +11,8 @@ import {
   Select,
   Card,
   CardContent,
-  CardActions
+  CardActions,
+  FormControl,
 } from '@material-ui/core';
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -23,7 +24,7 @@ import Button from "components/CustomButtons/Button.js";
 import Table from "./EPES-components/EPEStable.js";
 import Loading from './Loading';
 
-import { fetchEmployee } from "../actions/user-actions";
+import { fetchEmployee } from "../actions/fetch-actions";
 
 import { assignmentInitial, requirementInitial } from '../constants';
 
@@ -43,6 +44,8 @@ function getModalStyle() {
 }
 
 const styles = {
+  formControl: {
+  },
   etypeSelect: {
     width: '70%',
     marginBottom: '10px'
@@ -110,13 +113,14 @@ export default function AssignmentPage() {
 
   const [modalStyle] = React.useState(getModalStyle);
 
-  const [loading, setLoading] = useState(true);
   const [sAssignment, setSAssignment] = useState(assignmentInitial);
   const [aReq, setAReq] = useState(requirementInitial);
   const [addModalOpen, setAddModalOpen] = useState(false);
 
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.app.loading);
   const user = useSelector(state => state.user.currentUser);
+  const employee = useSelector(state => state.employee.data);
 
   useEffect(() => {
     dispatch(fetchEmployee());
@@ -124,16 +128,18 @@ export default function AssignmentPage() {
 
   const addAssignmentClick = () => {
     console.log(sAssignment);
-    const data = {
-      user,
-      sAssignment,
-      aReq
+    let data = {
+      ...sAssignment,
+      createrId: user.id,
     }
-    Axios.post('/asign/create', data)
-    .then((res) => {
-      console.log(res)
-    })
-    .catch(err => { console.log('ASIGN_CREATE_', err) })
+    
+    if(sAssignment.evaluationType === 1) data = {...data, requirementArray: aReq}
+
+    Axios.post(`/asign/${sAssignment.evaluationType}/create`, data)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch(err => { console.log('ASIGN_CREATE_', err) })
   }
 
   const addReqClick = () => {
@@ -162,6 +168,8 @@ export default function AssignmentPage() {
     )
   }
 
+  if (loading) return <Loading />
+
   return (
     <GridContainer>
       <Modal
@@ -185,9 +193,36 @@ export default function AssignmentPage() {
                 value={sAssignment.evaluationType}
                 onChange={(value) => setSAssignment({ ...sAssignment, evaluationType: value.target.value })}
               >
-                <MenuItem value={1}>Үр дүнгээр үнэлэх</MenuItem>
-                <MenuItem value={2}>Гүйцэтгэлээр үнэлэх</MenuItem>
+                <MenuItem value={0}>Үр дүнгээр үнэлэх</MenuItem>
+                <MenuItem value={1}>Гүйцэтгэлээр үнэлэх</MenuItem>
               </Select>
+              <TextField
+                value={sAssignment.name}
+                onChange={(value) => setSAssignment({ ...sAssignment, name: value.target.value })}
+                className={classes.depInput}
+                label="Ажлын нэр"
+                variant="outlined"
+              />
+              <FormControl variant="outlined" className={classes.depInput}>
+                <InputLabel id="demo-simple-select-outlined-label">Ажилтан сонгох</InputLabel>
+                <Select
+                  className={classes.depInput}
+                  labelid="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={sAssignment.employeeId}
+                  onChange={(value) => setSAssignment({ ...sAssignment, employeeId: value.target.value })}
+                >
+                  {employee
+                    .filter(emp => emp.departmentId === user.departmentId && emp.role === "3")
+                    .map(emp =>
+                      (
+                        <MenuItem value={emp.id}>
+                          {`${emp.lastname} ${emp.firstname}`}
+                        </MenuItem>
+                      ))
+                  }
+                </Select>
+              </FormControl>
               <TextField
                 value={sAssignment.act}
                 onChange={(value) => setSAssignment({ ...sAssignment, act: value.target.value })}
@@ -213,22 +248,22 @@ export default function AssignmentPage() {
                 label="Суурь түвшин"
                 variant="outlined"
               />
-              {sAssignment.evaluationType === 2 ?
+              {sAssignment.evaluationType === 1 ?
                 <Card className={classes.depInput}>
                   <CardContent>
                     <Button onClick={addReqClick} color="success" size="sm">НЭМЭХ</Button>
                     {aReq.map((req, index) => {
                       return (
                         <div className={classes.reqRow} key={index}>
-                          <TextField value={req.title} onChange={e => reqChange(e, req.id, 'title')} variant="outlined" className={classes.reqTitle} />
-                          <TextField value={req.percent} onChange={e => reqChange(e, req.id, 'percent')} variant="outlined" className={classes.reqPercent} />
+                          <TextField value={req.name} onChange={e => reqChange(e, req.id, 'name')} variant="outlined" className={classes.reqTitle} />
+                          <TextField value={req.scale} onChange={e => reqChange(e, req.id, 'scale')} variant="outlined" className={classes.reqPercent} />
                           <button onClick={e => delReqClick(e, req.id)} className={classes.xbutton}>x</button>
                         </div>
                       );
                     })}
                   </CardContent>
                 </Card> : ''}
-              {sAssignment.evaluationType === 1 ?
+              {sAssignment.evaluationType === 0 ?
                 <TextField
                   value={sAssignment.requirement}
                   onChange={(value) => setSAssignment({ ...sAssignment, requirement: value.target.value })}
