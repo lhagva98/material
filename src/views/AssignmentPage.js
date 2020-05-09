@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Axios from "axios";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,6 +23,8 @@ import Button from "components/CustomButtons/Button.js";
 import Table from "./EPES-components/EPEStable.js";
 import Loading from './Loading';
 
+import { fetchEmployee } from "../actions/user-actions";
+
 import { assignmentInitial, requirementInitial } from '../constants';
 
 function rand() {
@@ -39,6 +41,7 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
   };
 }
+
 const styles = {
   etypeSelect: {
     width: '70%',
@@ -112,7 +115,12 @@ export default function AssignmentPage() {
   const [aReq, setAReq] = useState(requirementInitial);
   const [addModalOpen, setAddModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user.currentUser);
+
+  useEffect(() => {
+    dispatch(fetchEmployee());
+  }, [])
 
   const addAssignmentClick = () => {
     console.log(sAssignment);
@@ -164,7 +172,7 @@ export default function AssignmentPage() {
       >
         <div style={modalStyle} className={classes.paper}></div>
       </Modal>
-      <GridItem xs={12} sm={12} md={12} className="bm-10">
+      <GridItem xs={12} sm={12} md={6} className="bm-10">
         <Card>
           <CardBody>
             <h2>Ажил нэмэх</h2>
@@ -234,8 +242,8 @@ export default function AssignmentPage() {
                 <h2>Үнэлгээний төрлөө сонгоно уу?</h2> : ''
               }
               <TextField
-                value={sAssignment.scope}
-                onChange={(value) => setSAssignment({ ...sAssignment, scope: value.target.value })}
+                value={sAssignment.goal}
+                onChange={(value) => setSAssignment({ ...sAssignment, goal: value.target.value })}
                 className={classes.depInput}
                 multiline
                 rows={2}

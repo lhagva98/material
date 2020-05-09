@@ -46,6 +46,7 @@ export const assignmentInitial = {
     scope: '',
     startDate: '',
     endDate: '',
+    goal: '',
 
 }
 
@@ -70,4 +71,18 @@ export const requirementInitial = [
         title: 'Бүгдээрээ маргааш бичлэгээ дуусгана.',
         percent: 25,
     },
+]
+
+export const GOevaluationType = [
+    {
+        id: 0,
+        name: 'Үр дүнгээр үнэлэх',
+        col: ['act', 'capital', 'currentSituation', 'requirement', 'goal'],
+    },
+    {
+        id: 1,
+        name: 'Гүйцэтгэлээр үнэлэх',
+        table: 'single',
+        col: ['act', 'capital', 'currentSituation', 'requirement', 'goal'],
+    }
 ]

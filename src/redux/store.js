@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware} from 'redux';
 import logger from 'redux-logger';
+import thunk from 'redux-thunk';
 
 import rootReducer from './root-reducer';
 
@@ -26,7 +27,7 @@ function loadFromLocalStorage(state) {
 const persistedState = loadFromLocalStorage();
 
 
-const middlewares = [logger];
+const middlewares = [thunk, logger];
 
 const store = createStore(
     rootReducer, 
