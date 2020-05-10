@@ -132,7 +132,7 @@ export default function PlanPage() {
           <CardBody>
             <Table
               tableHeaderColor="primary"
-              tableHead={["№", "Хугацаа", "Төлөвлөгөө", "Төлөв", '']}
+              tableHead={["№", "Хугацаа", "Төлөвлөгөө", "Төлөв"]}
               tableData={planArray}
               fileViewButtonHandler={fileViewButtonHandler}
             />

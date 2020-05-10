@@ -547,12 +547,6 @@ export default function EmployeePage() {
             <Button onClick={() => { setSeEmp(employeeInitial); setAddModalOpen(true); }} color="success" size="sm" round>
               Нэмэх
             </Button>
-            <Button color="danger" size="sm" round>
-              Устгах
-            </Button>
-            <Button color="primary" size="sm" round>
-              Филтер
-            </Button>
             <Table
               tableHeaderColor="primary"
               tableHead={["Овог", "Нэр", "Албан тушаал", "Утасны дугаар", "И-Мэйл"]}

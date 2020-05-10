@@ -24,7 +24,7 @@ import Button from "components/CustomButtons/Button.js";
 import Table from "./EPES-components/EPEStable.js";
 import Loading from './Loading';
 
-import { fetchEmployee } from "../actions/fetch-actions";
+import { fetchEmployee, fetchAssignment } from "../actions/fetch-actions";
 
 import { assignmentInitial, requirementInitial } from '../constants';
 
@@ -121,9 +121,11 @@ export default function AssignmentPage() {
   const loading = useSelector(state => state.app.loading);
   const user = useSelector(state => state.user.currentUser);
   const employee = useSelector(state => state.employee.data);
+  const array = useSelector(state => state.assignment.array)
 
   useEffect(() => {
     dispatch(fetchEmployee());
+    dispatch(fetchAssignment());
   }, [])
 
   const addAssignmentClick = () => {
@@ -132,12 +134,12 @@ export default function AssignmentPage() {
       ...sAssignment,
       createrId: user.id,
     }
-    
-    if(sAssignment.evaluationType === 1) data = {...data, requirementArray: aReq}
 
-    Axios.post(`/asign/${sAssignment.evaluationType}/create`, data)
+    if (sAssignment.evaluationType === 1) data = { ...data, requirementArray: aReq }
+
+    Axios.post(`/assign/${sAssignment.evaluationType}/create`, data)
       .then((res) => {
-        console.log(res)
+        if(res.status === 204) window.location.reload();
       })
       .catch(err => { console.log('ASIGN_CREATE_', err) })
   }
@@ -180,7 +182,25 @@ export default function AssignmentPage() {
       >
         <div style={modalStyle} className={classes.paper}></div>
       </Modal>
-      <GridItem xs={12} sm={12} md={6} className="bm-10">
+      <GridItem xs={12} sm={12} md={6}>
+        <Card>
+          <CardHeader color="primary">
+            <h4 className={classes.cardTitleWhite}>Үүсгэсэн ажлууд</h4>
+            {/* <p className={classes.cardCategoryWhite}>
+              Here is a subtitle for this table
+            </p> */}
+          </CardHeader>
+          <CardBody>
+            {console.log("ffffffff", array)}
+            <Table
+              tableHeaderColor="primary"
+              tableHead={["Ажлын нэр", "Хугацаа", "Гүйцэтгэх", "Төлөв", ""]}
+              tableData={array}
+            />
+          </CardBody>
+        </Card>
+      </GridItem>
+      <GridItem xs={12} sm={12} md={6}>
         <Card>
           <CardBody>
             <h2>Ажил нэмэх</h2>
@@ -212,7 +232,7 @@ export default function AssignmentPage() {
                   value={sAssignment.employeeId}
                   onChange={(value) => setSAssignment({ ...sAssignment, employeeId: value.target.value })}
                 >
-                  {employee
+                  {employee && employee
                     .filter(emp => emp.departmentId === user.departmentId && emp.role === "3")
                     .map(emp =>
                       (
@@ -336,26 +356,6 @@ export default function AssignmentPage() {
       </GridItem>
       <GridItem xs={12} sm={12} md={12}>
         <Card>
-          <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Ажлууд</h4>
-            {/* <p className={classes.cardCategoryWhite}>
-              Here is a subtitle for this table
-            </p> */}
-          </CardHeader>
-          <CardBody>
-            <Table
-              tableHeaderColor="primary"
-              tableHead={["Дугаар", "Ажлын нэр", "Эхлэх огноо", "Дуусах огноо", "Үүсгэсэн", "Гүйцэтгэсэн", "Гүйцэтгэлийн хувь, "]}
-              tableData={[
-                ["1", "Төслийн шаардлагыг тодорхойлох тухай", "2020.02.02", "2020.03.22", "А.Тэргэл", "Б.Цэцэгмаа", "99",],
-                ["1", "Төслийн шаардлагыг тодорхойлох тухай", "2020.02.02", "2020.03.22", "А.Тэргэл", "Б.Цэцэгмаа", "99",],
-                ["1", "Төслийн шаардлагыг тодорхойлох тухай", "2020.02.02", "2020.03.22", "А.Тэргэл", "Б.Цэцэгмаа", "99",],
-                ["1", "Төслийн шаардлагыг тодорхойлох тухай", "2020.02.02", "2020.03.22", "А.Тэргэл", "Б.Цэцэгмаа", "99",],
-                ["1", "Төслийн шаардлагыг тодорхойлох тухай", "2020.02.02", "2020.03.22", "А.Тэргэл", "Б.Цэцэгмаа", "99",],
-                ["1", "Төслийн шаардлагыг тодорхойлох тухай", "2020.02.02", "2020.03.22", "А.Тэргэл", "Б.Цэцэгмаа", "99",]
-              ]}
-            />
-          </CardBody>
         </Card>
       </GridItem>
     </GridContainer>
