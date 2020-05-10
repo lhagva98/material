@@ -3,6 +3,7 @@ import {
 } from '../types';
 
 const INITIAL_STATE = {
+  array: [ [ "" ], [ "" ]],
 }
 
 const assignmentReducer = (state = INITIAL_STATE, action) => {

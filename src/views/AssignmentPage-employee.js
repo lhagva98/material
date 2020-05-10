@@ -113,6 +113,7 @@ export default function AssignmentPage() {
 
   const [modalStyle] = React.useState(getModalStyle);
 
+  const [file, setFile] = useState();
   const [sAssignment, setSAssignment] = useState(assignmentInitial);
   const [aReq, setAReq] = useState(requirementInitial);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -121,7 +122,8 @@ export default function AssignmentPage() {
   const loading = useSelector(state => state.app.loading);
   const user = useSelector(state => state.user.currentUser);
   const employee = useSelector(state => state.employee.data);
-  const array = useSelector(state => state.assignment.array);
+  const assignment = useSelector(state => state.assignment.data)
+  const array = useSelector(state => state.assignment.array)
 
   useEffect(() => {
     dispatch(fetchEmployee());
@@ -139,7 +141,7 @@ export default function AssignmentPage() {
 
     Axios.post(`/assign/${sAssignment.evaluationType}/create`, data)
       .then((res) => {
-        if(res.status === 204) window.location.reload();
+        if (res.status === 204) window.location.reload();
       })
       .catch(err => { console.log('ASIGN_CREATE_', err) })
   }
@@ -170,6 +172,14 @@ export default function AssignmentPage() {
     )
   }
 
+  function selectButtonHandler(id) {
+    assignment.filter(ass => {
+      if (ass.id === id) {
+        setSAssignment(ass);
+      }
+    })
+  }
+
   if (loading) return <Loading />
 
   return (
@@ -185,7 +195,7 @@ export default function AssignmentPage() {
       <GridItem xs={12} sm={12} md={6}>
         <Card>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Үүсгэсэн ажлууд</h4>
+            <h4 className={classes.cardTitleWhite}>Миний ажлууд</h4>
             {/* <p className={classes.cardCategoryWhite}>
               Here is a subtitle for this table
             </p> */}
@@ -195,6 +205,7 @@ export default function AssignmentPage() {
               tableHeaderColor="primary"
               tableHead={["Ажлын нэр", "Хугацаа", "Гүйцэтгэх", "Төлөв", ""]}
               tableData={array}
+              selectButtonHandler={selectButtonHandler}
             />
           </CardBody>
         </Card>
@@ -202,12 +213,16 @@ export default function AssignmentPage() {
       <GridItem xs={12} sm={12} md={6}>
         <Card>
           <CardBody>
-            <h2>Ажил нэмэх</h2>
+            <h2>Ажил гүйцэтгэх</h2>
             <form>
               <InputLabel id="demo-simple-select-label">Үнэлгээний төрөл</InputLabel>
               <Select
+                disabled
                 labelid="demo-simple-select-label"
                 id="demo-simple-select"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 className={classes.etypeSelect}
                 value={sAssignment.evaluationType}
                 onChange={(value) => setSAssignment({ ...sAssignment, evaluationType: value.target.value })}
@@ -216,40 +231,29 @@ export default function AssignmentPage() {
                 <MenuItem value={1}>Гүйцэтгэлээр үнэлэх</MenuItem>
               </Select>
               <TextField
+                disabled
                 value={sAssignment.name}
                 onChange={(value) => setSAssignment({ ...sAssignment, name: value.target.value })}
                 className={classes.depInput}
                 label="Ажлын нэр"
                 variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
-              <FormControl variant="outlined" className={classes.depInput}>
-                <InputLabel id="demo-simple-select-outlined-label">Ажилтан сонгох</InputLabel>
-                <Select
-                  className={classes.depInput}
-                  labelid="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  value={sAssignment.employeeId}
-                  onChange={(value) => setSAssignment({ ...sAssignment, employeeId: value.target.value })}
-                >
-                  {employee && employee
-                    .filter(emp => emp.departmentId === user.departmentId && emp.role === "3")
-                    .map(emp =>
-                      (
-                        <MenuItem value={emp.id}>
-                          {`${emp.lastname} ${emp.firstname}`}
-                        </MenuItem>
-                      ))
-                  }
-                </Select>
-              </FormControl>
               <TextField
+                disabled
                 value={sAssignment.act}
                 onChange={(value) => setSAssignment({ ...sAssignment, act: value.target.value })}
                 className={classes.depInput}
                 label="Акт"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 variant="outlined"
               />
               <TextField
+                disabled
                 value={sAssignment.capital}
                 onChange={(value) => setSAssignment({ ...sAssignment, capital: value.target.value })}
                 className={classes.depInput}
@@ -257,8 +261,12 @@ export default function AssignmentPage() {
                 rows={2}
                 label="Хөрөнгө"
                 variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
+                disabled
                 value={sAssignment.currentSituation}
                 onChange={(value) => setSAssignment({ ...sAssignment, currentSituation: value.target.value })}
                 className={classes.depInput}
@@ -266,6 +274,9 @@ export default function AssignmentPage() {
                 rows={2}
                 label="Суурь түвшин"
                 variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               {sAssignment.evaluationType === 1 ?
                 <Card className={classes.depInput}>
@@ -284,6 +295,7 @@ export default function AssignmentPage() {
                 </Card> : ''}
               {sAssignment.evaluationType === 0 ?
                 <TextField
+                  disabled
                   value={sAssignment.requirement}
                   onChange={(value) => setSAssignment({ ...sAssignment, requirement: value.target.value })}
                   className={classes.depInput}
@@ -291,11 +303,15 @@ export default function AssignmentPage() {
                   multiline
                   rows={4}
                   variant="outlined"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 /> : ''}
               {sAssignment.evaluationType === '' ?
                 <h2>Үнэлгээний төрлөө сонгоно уу?</h2> : ''
               }
               <TextField
+                disabled
                 value={sAssignment.goal}
                 onChange={(value) => setSAssignment({ ...sAssignment, goal: value.target.value })}
                 className={classes.depInput}
@@ -303,8 +319,12 @@ export default function AssignmentPage() {
                 rows={2}
                 label="Хүрэх түвшин"
                 variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
               <TextField
+                disabled
                 type="date"
                 value={sAssignment.startDate}
                 onChange={value => { setSAssignment({ ...sAssignment, startDate: value.target.value }) }}
@@ -316,11 +336,32 @@ export default function AssignmentPage() {
                 }}
               />
               <TextField
+                disabled
                 type="date"
                 value={sAssignment.endDate}
                 onChange={value => { setSAssignment({ ...sAssignment, endDate: value.target.value }) }}
                 className={classes.depInput}
                 label="Дуусах хугацаа"
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                value={sAssignment.endDate}
+                onChange={value => { setSAssignment({ ...sAssignment, endDate: value.target.value }) }}
+                className={classes.depInput}
+                label="Үнэлгээ"
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                type="file"
+                onChange={value => setFile(value.target.files[0])}
+                className={classes.depInput}
+                label="Файл хавсаргах"
                 variant="outlined"
                 InputLabelProps={{
                   shrink: true,
@@ -348,7 +389,7 @@ export default function AssignmentPage() {
               size="sm"
               round
             >
-              Нэмэх
+              Илгээх
           </Button>
           </CardBody>
         </Card>

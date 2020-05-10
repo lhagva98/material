@@ -22,7 +22,8 @@ export default function CustomTable(props) {
     tableHeaderColor,
     editButtonHandler,
     deleteButtonHandler,
-    fileViewButtonHandler
+    fileViewButtonHandler,
+    selectButtonHandler
   } = props;
 
   return (
@@ -64,6 +65,10 @@ export default function CustomTable(props) {
                       {fileViewButtonHandler ?
                         <Button onClick={() => fileViewButtonHandler(prop)} color="success" size="sm" round >
                           Файл үзэх
+                        </Button> : null}
+                      {selectButtonHandler ?
+                        <Button onClick={() => selectButtonHandler(prop)} color="success" size="sm" round >
+                          Дэлгэрэнгүй
                         </Button> : null}
                       </div> : prop}
                     </TableCell>

@@ -10,12 +10,12 @@ import CompanyPage from 'views/CompanyPage';
 import DepartmentPage from 'views/DepartmentPage';
 import EmployeePage from 'views/EmployeePage';
 import PlanPage from 'views/PlanPage';
-import AssignmentPage from 'views/AssignmentPage';
+import AssignmentPage from 'views/AssignmentPage-employee';
 
 const routes = [
     {
         path: "/assignment",
-        name: "Ажлууд",
+        name: "Миний ажлууд",
         icon: ListAltIcon,
         component: AssignmentPage,
         layout: "/employee"

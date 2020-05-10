@@ -85,7 +85,12 @@ export const fetchAssignment = () => {
             ddata[key].id
           ];
         });
-        dispatch({ type: FETCH_ASSIGNMENT_SUCCESS, payload: {data: ddata, array: darray} });
+        dispatch({ 
+          type: FETCH_ASSIGNMENT_SUCCESS, 
+          payload: {
+            data: ddata, 
+            array: darray
+          }});
         dispatch({ type: FETCHING_DONE });
       })
       .catch(err => {
