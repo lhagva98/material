@@ -10,13 +10,12 @@ import {
 
 import { employeeRoles } from "../constants";
 
-const user = store.getState().user.currentUser;
-
 export const fetchEmployee = () => {
-  return function (dispatch) {
+  return function (dispatch, getState) {
     dispatch({ type: FETCHING });
+    const { companyId } = getState().user.currentUser;
 
-    Axios.get(`employees/findAll/${user.companyId}`)
+    Axios.get(`employees/findAll/${companyId}`)
       .then(res => {
         var ddata = res.data.emp;
         var darray = Object.keys(ddata).map(key => {
@@ -47,10 +46,11 @@ export const fetchEmployee = () => {
 }
 
 export const fetchCompany = () => {
-  return function (dispatch) {
+  return function (dispatch, getState) {
     dispatch({ type: FETCHING });
+    const { companyId } = getState().user.currentUser;
 
-    Axios.get(`/companies/find/${user.companyId}`)
+    Axios.get(`/companies/find/${companyId}`)
       .then(res => {
         dispatch({ type: FETCH_COMPANY_SUCCESS, payload: res.data.company });
         dispatch({ type: FETCHING_DONE });
@@ -63,10 +63,11 @@ export const fetchCompany = () => {
 }
 
 export const fetchAssignment = () => {
-  return function (dispatch) {
+  return function (dispatch, getState) {
     dispatch({ type: FETCHING });
-    console.log(user.id)
-    Axios.get(`/assign/findbyCreater/${user.id}`)
+    const { id } = getState().user.currentUser;
+
+    Axios.get(`/assign/findbyCreater/${id}`)
       .then(res => {
         var ddata = res.data;
         var darray = Object.keys(ddata).map(key => {
@@ -76,7 +77,7 @@ export const fetchAssignment = () => {
           } else {
             cname = '';
           }
-          const date =`${ddata[key].startDate} - ${ddata[key].endDate}`
+          const date = `${ddata[key].startDate} - ${ddata[key].endDate}`
           return [
             ddata[key].name,
             date,
@@ -85,12 +86,13 @@ export const fetchAssignment = () => {
             ddata[key].id
           ];
         });
-        dispatch({ 
-          type: FETCH_ASSIGNMENT_SUCCESS, 
+        dispatch({
+          type: FETCH_ASSIGNMENT_SUCCESS,
           payload: {
-            data: ddata, 
+            data: ddata,
             array: darray
-          }});
+          }
+        });
         dispatch({ type: FETCHING_DONE });
       })
       .catch(err => {
