@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import { Modal, TextField, MenuItem } from '@material-ui/core';
@@ -14,6 +14,7 @@ import Button from "components/CustomButtons/Button.js";
 import Table from "./EPES-components/EPEStable.js";
 import Loading from './Loading';
 
+import { fetchEmployee, fetchAssignment } from "../actions/fetch-actions";
 
 import { employeeRoles, employeeInitial } from '../constants';
 import Axios from "axios";
@@ -83,7 +84,6 @@ export default function EmployeePage() {
 
   const [modalStyle] = React.useState(getModalStyle);
 
-  const [loading, setLoading] = useState(true);
   const [edata, setEdata] = useState('');
   const [earray, setEarray] = useState([]);
   const [seEmp, setSeEmp] = useState(employeeInitial);
@@ -93,35 +93,16 @@ export default function EmployeePage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   // const [viewModalOpen, setViewModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
+  const loading = useSelector(state => state.app.loading);
   const user = useSelector(state => state.user.currentUser);
+  const employee = useSelector(state => state.employee.data);
+  const assignment = useSelector(state => state.assignment.data)
+  const array = useSelector(state => state.assignment.array)
+
 
   useEffect(() => {
-    Axios.get(`employees/findAll/${user.companyId}`)
-      .then(res => {
-        var ddata = res.data.emp;
-        var darray = Object.keys(ddata).map(key => {
-          var cname = '';
-          if (ddata[key].department)
-            if (ddata[key].department.name !== 0) {
-              cname = ddata[key].department.name;
-            } else {
-              cname = '';
-            }
-          return [ddata[key].lastname, ddata[key].firstname, cname, employeeRoles[ddata[key].role - 1].name, ddata[key].id];
-        });
-        setEarray(darray);
-        setEdata(ddata);
-        setLoading(false);
-
-        setSeEmp({ ...seEmp, companyId: user.companyId });
-      })
-      .catch(err => { console.log('EMP_DATA_FETCH_', err) })
-
-    Axios.get(`departments/findAll/${user.companyId}`)
-      .then(res => {
-        setDepartment(res.data.dep);
-      })
-      .catch(err => { console.log('DEP_DATA_FETCH_', err) })
+    dispatch(fetchEmployee());
   }, []);
 
   const addEmployeeClick = () => {

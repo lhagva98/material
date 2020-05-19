@@ -13,13 +13,17 @@ import { employeeRoles } from "../constants";
 export const fetchEmployee = () => {
   return function (dispatch, getState) {
     dispatch({ type: FETCHING });
-    const { companyId } = getState().user.currentUser;
+    const { departmentId, role, companyId } = getState().user.currentUser;
+    var URL = '';
 
-    Axios.get(`employees/findAll/${companyId}`)
+    if (role === "1") URL = `employees/findAll/${companyId}`
+    if (role === "2") URL = `employees/findbyDepartment/${departmentId}`;
+    console.log("FETCH_URL", URL);
+    Axios.get(URL)
       .then(res => {
         var ddata = res.data.emp;
         var darray = Object.keys(ddata).map(key => {
-          var cname = '';
+          var cname;
           if (ddata[key].department)
             if (ddata[key].department.name !== 0) {
               cname = ddata[key].department.name;
@@ -65,9 +69,13 @@ export const fetchCompany = () => {
 export const fetchAssignment = () => {
   return function (dispatch, getState) {
     dispatch({ type: FETCHING });
-    const { id } = getState().user.currentUser;
+    const { id, role } = getState().user.currentUser;
+    var URL = '';
 
-    Axios.get(`/assign/findbyCreater/${id}`)
+    if (role === "2" || role === "1") URL = `/assign/findbyCreater/${id}`;
+    if (role === "3") URL = `/assign/findbyEmployee/${id}`;
+    console.log("FETCH_URL", URL);
+    Axios.get(URL)
       .then(res => {
         var ddata = res.data;
         var darray = Object.keys(ddata).map(key => {
@@ -99,5 +107,22 @@ export const fetchAssignment = () => {
         console.log('ASSIGNMENT_DATA_FETCH_', err);
         dispatch({ type: FETCHING_DONE });
       })
+  }
+}
+
+export const fetchDepartment = () => {
+  return function (dispatch, getState) {
+    return function (dispatch, getState) {
+      dispatch({ type: FETCHING });
+      const { departmentId, role, companyId } = getState().user.currentUser;
+      var URL = '';
+
+      if (role === "1") URL = `employees/findAll/${companyId}`
+      if (role === "2") URL = `employees/findbyDepartment/${departmentId}`;
+      console.log("FETCH_URL", URL);
+      Axios.get(URL)
+        .then()
+        .catch()
+    }
   }
 }
