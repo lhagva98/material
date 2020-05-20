@@ -35,7 +35,7 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/employee" to="/employee/dashboard" />
+    <Redirect from="/employee" to="/employee/assignment" />
   </Switch>
 );
 

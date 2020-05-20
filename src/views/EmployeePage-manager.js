@@ -507,7 +507,7 @@ export default function EmployeePage() {
             <Table
               tableHeaderColor="primary"
               tableHead={["Овог", "Нэр", "Хэлтэс", "Албан тушаал", ""]}
-              tableData={earray}
+              tableData={earray ? earray : []}
               editButtonHandler={editButtonHandler}
               deleteButtonHandler={deleteButtonHandler}
             />
