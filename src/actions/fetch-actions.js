@@ -75,18 +75,20 @@ export const fetchAssignment = () => {
 
     if (role === "2" || role === "1") URL = `/assign/findbyCreater/${id}`;
     if (role === "3") URL = `/assign/findbyEmployee/${id}`;
+
     console.log("FETCH_URL", URL);
     Axios.get(URL)
       .then(res => {
         var ddata = res.data;
         var darray = Object.keys(ddata).map(key => {
           var cname = '';
-          if (ddata[key]) {
+          if (role === "2" && ddata[key]) {
             cname = `${ddata[key]["employee.lastname"]} ${ddata[key]["employee.firstname"]}`;
-          } else {
-            cname = '';
-          }
-          const date = `${ddata[key].startDate.substring(0, 9)} - ${ddata[key].endDate.substring(0, 9)}`
+          } 
+
+          var date = ''
+          if(ddata[key].startDate && ddata[key].endDate)
+          date = `${ddata[key].startDate.substring(0, 9)} - ${ddata[key].endDate.substring(0, 9)}`
           return [
             ddata[key].name,
             date,

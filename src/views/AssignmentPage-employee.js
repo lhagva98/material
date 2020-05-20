@@ -203,7 +203,7 @@ export default function AssignmentPage() {
           <CardBody>
             <Table
               tableHeaderColor="primary"
-              tableHead={["Ажлын нэр", "Хугацаа", "Гүйцэтгэх", "Төлөв", ""]}
+              tableHead={["Ажлын нэр", "Хугацаа", "Төлөв", ""]}
               tableData={array}
               selectButtonHandler={selectButtonHandler}
             />
