@@ -86,7 +86,7 @@ export const fetchAssignment = () => {
           } else {
             cname = '';
           }
-          const date = `${ddata[key].startDate} - ${ddata[key].endDate}`
+          const date = `${ddata[key].startDate.substring(0, 9)} - ${ddata[key].endDate.substring(0, 9)}`
           return [
             ddata[key].name,
             date,

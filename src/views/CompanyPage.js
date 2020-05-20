@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -7,9 +7,12 @@ import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
+import CardAvatar from "components/Card/CardAvatar.js";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCompany } from "../actions/fetch-actions";
+
+import avatar from "assets/tsoyon-logo.png";
 
 const styles = {
   cardCategoryWhite: {
@@ -18,6 +21,10 @@ const styles = {
     fontSize: "14px",
     marginTop: "0",
     marginBottom: "0"
+  },
+  companyLogo: {
+    marginTop: "40px",
+    width: "200px",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -34,9 +41,9 @@ const useStyles = makeStyles(styles);
 
 export default function CompanyPage() {
   const classes = useStyles();
-  
-  const company = useSelector( state => state.company );
-  const user = useSelector( state => state.user.currentUser );
+
+  const company = useSelector(state => state.company);
+  const user = useSelector(state => state.user.currentUser);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -158,13 +165,14 @@ export default function CompanyPage() {
         </GridItem> */}
         <GridItem xs={12} sm={12} md={6}>
           <Card profile>
-            {/* <CardAvatar profile>
-              <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
-              </a>
-            </CardAvatar> */}
+            <CardAvatar profile>
+            </CardAvatar>
             <CardBody profile>
-              <h6 className={classes.cardCategory}>{'no logo'}</h6>
+              <h6>
+                <a href="#pablo" onClick={e => e.preventDefault()}>
+                  <img className={classes.companyLogo} src={avatar} alt="..." />
+                </a>
+              </h6>
               <h4 className={classes.cardTitle}>{company ? company.name : ''}</h4>
               <h4 className={classes.cardTitle}>{company ? company.registrationNo : ''}</h4>
               <p className={classes.description}>

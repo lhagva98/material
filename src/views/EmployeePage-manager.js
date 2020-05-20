@@ -108,7 +108,9 @@ export default function EmployeePage() {
   const addEmployeeClick = () => {
     const data = {
       ...seEmp,
-      companyId: user.companyId
+      companyId: user.companyId,
+      departmentId: user.departmentId,
+      role: "3"
     }
     Axios.post('employees/add', data)
       .then(res => {
@@ -195,20 +197,6 @@ export default function EmployeePage() {
               variant="outlined"
             />
             <TextField
-              value={seEmp.role}
-              onChange={(value) => setSeEmp({ ...seEmp, role: value.target.value })}
-              className={classes.depInput}
-              select
-              label="Хэрэглэгчийн түвшин"
-              variant="outlined"
-            >
-              {employeeRoles && employeeRoles.map((d) => (
-                <MenuItem key={d.id} value={d.id}>
-                  {d.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
               value={seEmp.dateOfBirth}
               type="date"
               onChange={(value) => setSeEmp({ ...seEmp, dateOfBirth: value.target.value })}
@@ -240,20 +228,6 @@ export default function EmployeePage() {
               label="И-мэйл"
               variant="outlined"
             />
-            <TextField
-              value={seEmp.departmentId}
-              onChange={(value) => setSeEmp({ ...seEmp, departmentId: value.target.value })}
-              className={classes.depInput}
-              select
-              label="Хэлтэс"
-              variant="outlined"
-            >
-              {department && department.map((d) => (
-                <MenuItem key={d.id} value={d.id}>
-                  {d.name}
-                </MenuItem>
-              ))}
-            </TextField>
             <TextField
               value={seEmp.password}
               onChange={(value) => setSeEmp({ ...seEmp, password: value.target.value })}
