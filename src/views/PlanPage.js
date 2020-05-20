@@ -132,7 +132,7 @@ export default function PlanPage() {
           <CardBody>
             <Table
               tableHeaderColor="primary"
-              tableHead={["№", "Хугацаа", "Төлөвлөгөө", "Төлөв"]}
+              tableHead={["№", "Хугацаа", "Төлөвлөгөө", ""]}
               tableData={planArray}
               fileViewButtonHandler={fileViewButtonHandler}
             />
@@ -189,7 +189,7 @@ export default function PlanPage() {
                 }}
               />
             </form>
-            <Button onClick={addPlanClick}>Nemeh</Button>
+            <Button onClick={addPlanClick}>Нэмэх</Button>
           </CardBody>
         </Card>
       </GridItem>

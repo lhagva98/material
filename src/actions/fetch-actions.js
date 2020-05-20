@@ -15,10 +15,11 @@ export const fetchEmployee = () => {
     dispatch({ type: FETCHING });
     const { departmentId, role, companyId } = getState().user.currentUser;
     var URL = '';
-
+    
     if (role === "1") URL = `employees/findAll/${companyId}`
     if (role === "2") URL = `employees/findbyDepartment/${departmentId}`;
     console.log("FETCH_URL", URL);
+
     Axios.get(URL)
       .then(res => {
         var ddata = res.data.emp;

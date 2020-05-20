@@ -85,7 +85,6 @@ export default function EmployeePage() {
   const [modalStyle] = React.useState(getModalStyle);
 
   const [edata, setEdata] = useState('');
-  const [earray, setEarray] = useState([]);
   const [seEmp, setSeEmp] = useState(employeeInitial);
   const [department, setDepartment] = useState(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -94,6 +93,7 @@ export default function EmployeePage() {
   // const [viewModalOpen, setViewModalOpen] = useState(false);
 
   const dispatch = useDispatch();
+  const earray = useSelector(state => state.employee.array)
   const loading = useSelector(state => state.app.loading);
   const user = useSelector(state => state.user.currentUser);
   const employee = useSelector(state => state.employee.data);
