@@ -47,6 +47,7 @@ export const assignmentInitial = {
     startDate: '',
     endDate: '',
     goal: '',
+    completionPercetage: '',
 
 }
 
@@ -85,4 +86,19 @@ export const GOevaluationType = [
         table: 'single',
         col: ['act', 'capital', 'currentSituation', 'requirement', 'goal'],
     }
+]
+
+export const assignmentStatus = [
+    {
+        id: 0,
+        name: 'Үүсгэсэн',
+    },
+    {
+        id: 1,
+        name: 'Гүйцэтгэсэн',
+    },
+    {
+        id: 2,
+        name: 'Буцаагдсан',
+    },
 ]

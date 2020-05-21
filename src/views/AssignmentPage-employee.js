@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { storage } from '../firebase';
 import Axios from "axios";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -117,6 +118,7 @@ export default function AssignmentPage() {
   const [sAssignment, setSAssignment] = useState(assignmentInitial);
   const [aReq, setAReq] = useState(requirementInitial);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const dispatch = useDispatch();
   const loading = useSelector(state => state.app.loading);
@@ -131,19 +133,38 @@ export default function AssignmentPage() {
   }, [])
 
   const addAssignmentClick = () => {
-    console.log(sAssignment);
-    let data = {
-      ...sAssignment,
-      createrId: user.id,
+
+    const date = new Date().toISOString().substring(0, 19);
+    const fileRef = `uploads/file-${date}-${file.name}`;
+    const uploadTask = storage.ref(fileRef).put(file);
+
+    uploadTask.on('state_changed',
+    (snap) => {
+      const percent = Math.round((snap.bytesTransferred / snap.totalBytes) * 100)
+      setProgress(percent);
+    },
+    (err) => {
+      console.log("PLAN_FILE_UPLOAD_", err)
+    },
+    () => {
+      storage.ref(fileRef).getDownloadURL()
+        .then(url => {
+          const data = {
+            id: sAssignment.id,
+            fileId: url,
+            ownerId: user.id,
+            companyId: user.companyId,
+            statusId: 1
+          }
+          Axios.post('assign/turnin', data)
+            .then(res => {
+              if (res.status === 204)
+                window.location.reload();
+            })
+            .catch(err => { console.log('EMP_ADD_', err) })
+        })
     }
-
-    if (sAssignment.evaluationType === 1) data = { ...data, requirementArray: aReq }
-
-    Axios.post(`/assign/${sAssignment.evaluationType}/create`, data)
-      .then((res) => {
-        if (res.status === 204) window.location.reload();
-      })
-      .catch(err => { console.log('ASIGN_CREATE_', err) })
+  )
   }
 
   const addReqClick = () => {
@@ -348,11 +369,12 @@ export default function AssignmentPage() {
                 }}
               />
               <TextField
-                value={sAssignment.endDate}
-                onChange={value => { setSAssignment({ ...sAssignment, endDate: value.target.value }) }}
+                value={sAssignment.completionPercetage}
+                onChange={value => { setSAssignment({ ...sAssignment, completionPercetage: value.target.value }) }}
                 className={classes.depInput}
                 label="Үнэлгээ"
                 variant="outlined"
+                helperText="Та өөрийн гүйцэтгэлийг 0-100 оноогоор дүгнэнэ үү?"
                 InputLabelProps={{
                   shrink: true,
                 }}

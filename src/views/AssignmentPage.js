@@ -132,6 +132,7 @@ export default function AssignmentPage() {
     console.log(sAssignment);
     let data = {
       ...sAssignment,
+      statusId: 0,
       createrId: user.id,
     }
 

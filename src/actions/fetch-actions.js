@@ -8,7 +8,7 @@ import {
   FETCH_ASSIGNMENT_SUCCESS
 } from '../types';
 
-import { employeeRoles } from "../constants";
+import { employeeRoles, assignmentStatus } from "../constants";
 
 export const fetchEmployee = () => {
   return function (dispatch, getState) {
@@ -86,14 +86,20 @@ export const fetchAssignment = () => {
             cname = `${ddata[key]["employee.lastname"]} ${ddata[key]["employee.firstname"]}`;
           } 
 
-          var date = ''
+          var date = 'yyyy-mm-dd - yyyy-mm-dd'
           if(ddata[key].startDate && ddata[key].endDate)
-          date = `${ddata[key].startDate.substring(0, 9)} - ${ddata[key].endDate.substring(0, 9)}`
+          date = `${ddata[key].startDate.substring(0, 10)} - ${ddata[key].endDate.substring(0, 10)}`
+          
+          console.log(ddata[key].statusId, assignmentStatus[ddata[key].statusId].name)
+          var status = '';
+          if(ddata[key].statusId !== null) 
+          status = assignmentStatus[ddata[key].statusId].name;
+          
           return [
             ddata[key].name,
             date,
             cname,
-            ddata[key].statusId,
+            status,
             ddata[key].id
           ];
         });
