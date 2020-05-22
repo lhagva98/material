@@ -1,5 +1,4 @@
 import Axios from "axios";
-import store from '../redux/store';
 import {
   FETCHING,
   FETCHING_DONE,
@@ -82,8 +81,11 @@ export const fetchAssignment = () => {
         var ddata = res.data;
         var darray = Object.keys(ddata).map(key => {
           var cname = '';
+          var percent = 'N/A'
           if (role === "2" && ddata[key]) {
             cname = `${ddata[key]["employee.lastname"]} ${ddata[key]["employee.firstname"]}`;
+            if(ddata[key].completionPercetage)
+            percent = ddata[key].completionPercetage;
           } 
 
           var date = 'yyyy-mm-dd - yyyy-mm-dd'
@@ -100,6 +102,7 @@ export const fetchAssignment = () => {
             date,
             cname,
             status,
+            percent,
             ddata[key].id
           ];
         });

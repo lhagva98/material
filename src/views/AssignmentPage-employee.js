@@ -137,35 +137,33 @@ export default function AssignmentPage() {
     const date = new Date().toISOString().substring(0, 19);
     const fileRef = `uploads/file-${date}-${file.name}`;
     const uploadTask = storage.ref(fileRef).put(file);
-    
-// api saijruulalt hiih
-  //   uploadTask.on('state_changed',
-  //   (snap) => {
-  //     const percent = Math.round((snap.bytesTransferred / snap.totalBytes) * 100)
-  //     setProgress(percent);
-  //   },
-  //   (err) => {
-  //     console.log("PLAN_FILE_UPLOAD_", err)
-  //   },
-  //   () => {
-  //     storage.ref(fileRef).getDownloadURL()
-  //       .then(url => {
-  //         const data = {
-  //           id: sAssignment.id,
-  //           fileId: url,
-  //           ownerId: user.id,
-  //           companyId: user.companyId,
-  //           statusId: 1
-  //         }
-  //         Axios.post('assign/turnin', data)
-  //           .then(res => {
-  //             if (res.status === 204)
-  //               window.location.reload();
-  //           })
-  //           .catch(err => { console.log('EMP_ADD_', err) })
-  //       })
-  //   }
-  // )
+
+    // api saijruulalt hiih
+    uploadTask.on('state_changed',
+      (snap) => {
+        const percent = Math.round((snap.bytesTransferred / snap.totalBytes) * 100)
+        setProgress(percent);
+      },
+      (err) => {
+        console.log("PLAN_FILE_UPLOAD_", err)
+      },
+      () => {
+        storage.ref(fileRef).getDownloadURL()
+          .then(url => {
+            const data = {
+              id: sAssignment.id,
+              fileId: url,
+              completionPercetage: sAssignment.completionPercetage
+            }
+            Axios.post('assign/turnin', data)
+              .then(res => {
+                if (res.status === 204)
+                  window.location.reload();
+              })
+              .catch(err => { console.log('EMP_ADD_', err) })
+          })
+      }
+    )
   }
 
   const addReqClick = () => {
