@@ -11,6 +11,7 @@ import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import ProjectCard from "components/ProjectCard";
+import AddProjectCard from "components/AddProjectCard";
 import { firestore } from 'firebase';
 
 import Loading from './Loading';
@@ -42,7 +43,7 @@ const styles = {
     backgroundColor: 'white',
     boxShadow: 5,
     padding: 20,
-    allignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   cardCategoryWhite: {
@@ -76,6 +77,9 @@ const styles = {
     backgroundColor: "transparent",
     boxShadow: 'none',
   },
+  projectBox: {
+    alignItems: 'stretch',
+  }
 };
 
 const useStyles = makeStyles(styles);
@@ -375,8 +379,9 @@ export default function DepartmentPage() {
             </p> */}
           </CardHeader>
           <CardBody>
-            <GridContainer>
+            <GridContainer className={classes.projectBox}>
               <ProjectCard />
+              <AddProjectCard />
             </GridContainer>
 
             {/* <Button onClick={() => {
