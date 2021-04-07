@@ -10,6 +10,7 @@ import Card from "components/Card/Card.js";
 import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import ProjectCard from "components/ProjectCard";
 import { firestore } from 'firebase';
 
 import Loading from './Loading';
@@ -60,7 +61,7 @@ const styles = {
     color: "#FFFFFF",
     marginTop: "0px",
     minHeight: "auto",
-    fontWeight: "300",
+    fontWeight: "700",
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     marginBottom: "3px",
     textDecoration: "none",
@@ -70,7 +71,11 @@ const styles = {
       fontWeight: "400",
       lineHeight: "1"
     }
-  }
+  },
+  mainCard: {
+    backgroundColor: "transparent",
+    boxShadow: 'none',
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -362,15 +367,19 @@ export default function DepartmentPage() {
         </div>
       </Modal>
       <GridItem xs={12} sm={12} md={12}>
-        <Card>
+        <Card className={classes.mainCard}>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Хэлтэсүүд</h4>
-            <p className={classes.cardCategoryWhite}>
+            <h4 className={classes.cardTitleWhite}>Нийт төслүүд</h4>
+            {/* <p className={classes.cardCategoryWhite}>
               Байгууллагын хэлтсүүдийн тухай дэлгэрэнгүй мэдээлэл
-            </p>
+            </p> */}
           </CardHeader>
           <CardBody>
-            <Button onClick={() => {
+            <GridContainer>
+              <ProjectCard />
+            </GridContainer>
+
+            {/* <Button onClick={() => {
               setdeId('');
               setName('');
               setDesc('');
@@ -386,7 +395,7 @@ export default function DepartmentPage() {
               tableHeaderColor="primary"
               tableHead={["Нэр", "Тайлбайр", "Толгой Хэлтэс", '']}
               tableData={DArray}
-            />
+            /> */}
           </CardBody>
         </Card>
       </GridItem>

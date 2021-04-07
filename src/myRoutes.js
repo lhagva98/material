@@ -29,7 +29,7 @@ const routes = [
     // },
     {
         path: "/project",
-        name: "Төслүүд",
+        name: "Төсөл",
         icon: BusinessIcon,
         component: DepartmentPage,
         layout: "/home"
