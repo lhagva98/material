@@ -28,8 +28,8 @@ const routes = [
     //     layout: "/home"
     // },
     {
-        path: "/department",
-        name: "Хэлтэс",
+        path: "/project",
+        name: "Төслүүд",
         icon: BusinessIcon,
         component: DepartmentPage,
         layout: "/home"

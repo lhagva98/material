@@ -101,11 +101,13 @@ const sidebarStyle = theme => ({
     marginRight: "15px"
   },
   img: {
-    width: "35px",
+    // width: "35px",
+    height: "60px",
     top: "22px",
-    position: "absolute",
+    // position: "absolute",
     verticalAlign: "middle",
-    border: "0"
+    border: "0",
+    marginBottom: "16px",
   },
   background: {
     position: "absolute",
