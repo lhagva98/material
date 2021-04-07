@@ -20,13 +20,13 @@ const routes = [
         component: DashboardPage,
         layout: "/home"
     },
-    {
-        path: "/company",
-        name: "Байгууллага",
-        icon: BusinessIcon,
-        component: CompanyPage,
-        layout: "/home"
-    },
+    // {
+    //     path: "/company",
+    //     name: "Төслүүд",
+    //     icon: BusinessIcon,
+    //     component: CompanyPage,
+    //     layout: "/home"
+    // },
     {
         path: "/department",
         name: "Хэлтэс",
@@ -34,27 +34,27 @@ const routes = [
         component: DepartmentPage,
         layout: "/home"
     },
-    {
-        path: "/employee",
-        name: "Ажилчид",
-        icon: GroupIcon,
-        component: EmployeePage,
-        layout: "/home"
-    },
-    {
-        path: "/plan",
-        name: "Төлөвлөгөө",
-        icon: AssignmentIcon,
-        component: PlanPage,
-        layout: "/home"
-    },
-    {
-        path: "/assignment",
-        name: "Ажлууд",
-        icon: ListAltIcon,
-        component: AssignmentPage,
-        layout: "/home"
-    },
+    // {
+    //     path: "/employee",
+    //     name: "Ажилчид",
+    //     icon: GroupIcon,
+    //     component: EmployeePage,
+    //     layout: "/home"
+    // },
+    // {
+    //     path: "/plan",
+    //     name: "Төлөвлөгөө",
+    //     icon: AssignmentIcon,
+    //     component: PlanPage,
+    //     layout: "/home"
+    // },
+    // {
+    //     path: "/assignment",
+    //     name: "Ажлууд",
+    //     icon: ListAltIcon,
+    //     component: AssignmentPage,
+    //     layout: "/home"
+    // },
 ]
 
 export default routes;

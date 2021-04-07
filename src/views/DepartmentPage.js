@@ -10,6 +10,7 @@ import Card from "components/Card/Card.js";
 import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import { firestore } from 'firebase';
 
 import Loading from './Loading';
 import Table from "./EPES-components/EPEStable.js";
@@ -79,7 +80,7 @@ export default function DepartmentPage() {
 
   const [modalStyle] = React.useState(getModalStyle);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [department, setDepartmant] = useState();
   const [DArray, setDarray] = useState([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -93,7 +94,12 @@ export default function DepartmentPage() {
   const user = useSelector(state => state.user.currentUser);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/departments/findAll/${user.companyId}`, {
+
+    firestore().collection('test').doc('123').get().then((doc) => {
+      console.log("doc ", doc.data());
+    })
+
+    fetch(`http://localhost:3001/departments/findAll/1`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -195,14 +201,14 @@ export default function DepartmentPage() {
 
   const handleDeleteButtonClick = () => {
     {
-      const data = JSON.stringify({ 
-        id: deId, 
-        name, 
-        desc, 
-        root, 
-        companyId: user.companyId 
+      const data = JSON.stringify({
+        id: deId,
+        name,
+        desc,
+        root,
+        companyId: user.companyId
       });
-      
+
       fetch(`http://localhost:3001/departments/delete/`, {
         method: 'POST',
         headers: {

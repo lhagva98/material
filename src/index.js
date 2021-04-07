@@ -17,6 +17,8 @@ import CEO from './layouts/CEO';
 import Manager from './layouts/Manager';
 import Employee from "./layouts/Employee";
 
+import firebase from 'firebase';
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 import "react-datepicker/dist/react-datepicker.css";

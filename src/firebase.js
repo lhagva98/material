@@ -4,14 +4,13 @@ import 'firebase/auth';
 import 'firebase/storage';
 
 const config = {
-    apiKey: "AIzaSyB_vZ7fAIo0431L67C50KvTy9lvkKYUkuM",
-    authDomain: "epes-teki-web-app.firebaseapp.com",
-    databaseURL: "https://epes-teki-web-app.firebaseio.com",
-    projectId: "epes-teki-web-app",
-    storageBucket: "epes-teki-web-app.appspot.com",
-    messagingSenderId: "770038283466",
-    appId: "1:770038283466:web:79ae7b993a841249100833",
-    measurementId: "G-L4CC5ML3GX"
+    apiKey: "AIzaSyBfYcb83Uoupzr1dwbXRLijTDaMNRbxaHg",
+    authDomain: "material-22f40.firebaseapp.com",
+    projectId: "material-22f40",
+    storageBucket: "material-22f40.appspot.com",
+    messagingSenderId: "641133879737",
+    appId: "1:641133879737:web:262af749fcaf158c2a1668",
+    measurementId: "G-8JZ99YBD7H"
 };
 
 firebase.initializeApp(config);
