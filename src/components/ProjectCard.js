@@ -17,6 +17,8 @@ import { AttachFile } from '@material-ui/icons';
 const styles = {
   projectCard: {
     cursor: "pointer",
+    marginBottom: 0,
+    marginTop: 0,
   },
   headerDetails: {
     display: "flex",
@@ -60,7 +62,7 @@ export default () => {
   const classes = useStyles();
 
   return (
-    <GridItem xs={4} >
+    <GridItem xs={3} >
       <Card
         onClick={() => { console.log("clike") }}
         className={classes.projectCard}

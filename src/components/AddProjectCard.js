@@ -16,9 +16,14 @@ import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from "react-router";
 
 const styles = {
+  gridStyle: {
+    alignSelf: 'stretch',
+  },
   projectCard: {
     cursor: "pointer",
-    height: 222,
+    height: "100%",
+    marginBottom: 0,
+    marginTop: 0,
     backgroundColor: '#E3E7EF',
     border: '2px dashed #838383',
     justifyContent: 'center',
@@ -50,7 +55,7 @@ export default () => {
   }
 
   return (
-    <GridItem xs={4} >
+    <GridItem xs={3} >
       <Card
         onClick={handleClick}
         className={classes.projectCard}
