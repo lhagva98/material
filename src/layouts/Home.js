@@ -10,6 +10,8 @@ import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
+import ProjectAddPage from "views/ProjectAddPage";
+
 import routes from "myRoutes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
@@ -17,7 +19,7 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/logo.png";
 
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 let ps;
 
@@ -30,12 +32,14 @@ const switchRoutes = (
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
+            exact={prop.exact}
           />
         );
       }
       return null;
     })}
-    <Redirect from="/home" to="/home/dashboard" />
+    <Route path='/home/project/add' component={ProjectAddPage} />
+    {/* <Redirect from="/home" to="/home/dashboard" /> */}
   </Switch>
 );
 
@@ -49,7 +53,7 @@ export default function Home({ ...rest }) {
   // states and functions
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const user = useSelector( state => state.user.user);
+  const user = useSelector(state => state.user.user);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

@@ -32,7 +32,8 @@ const routes = [
         name: "Төсөл",
         icon: BusinessIcon,
         component: DepartmentPage,
-        layout: "/home"
+        layout: "/home",
+        exact: true
     },
     // {
     //     path: "/employee",
