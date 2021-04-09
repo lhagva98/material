@@ -202,21 +202,46 @@ export default function DepartmentPage() {
   const [desc, setDesc] = useState('');
   const [root, setRoot] = useState('');
   const [events, setEvents] = useState([]);
-  const [popup, setPopup] = useState(true);
+  const [popup, setPopup] = useState(false);
   const [pcoordinate, setPcoordinate] = useState({ x: 600, y: 300 })
   const [activities, setActivities] = useState(activityData);
   const [editActivity, setEditActivity] = useState(true);
   const [materials, setMaterials] = useState(materialData);
+  const [activityInput, setActivityInput] = useState('');
+  const [activeDate, setActiveDate] = useState(null);
 
   useEffect(() => {
     console.log("param ", id)
+    firestore().collection(`projects/${id}/events`).onSnapshot(snapshot => {
+      let result = [];
+      snapshot.forEach(doc => {
+        let data = doc.data()
+        console.log("data ", data)
+        result.push({
+          id: data.id,
+          title: data.title,
+          start: new Date(data.start),
+          end: new Date(data.end),
+          allday: true,
+        })
+      })
+      setEvents(result);
+    })
   }, []);
 
 
   const handleSlotSelect = (slot) => {
-    console.log("slot ", slot);
-    setPcoordinate({ x: slot.box.x, y: slot.box.y });
-    setPopup(!popup);
+    console.log("slot ", events);
+    // setPcoordinate({ x: slot.box.x, y: slot.box.y });
+
+    if (popup) {
+      setActiveDate(null);
+      setPopup(false);
+
+    } else {
+      setActiveDate(slot.start);
+      setPopup(true);
+    }
     // setEvents(events => ([...events, {
     //   title: `event ${events.length}`,
     //   start: slot.start,
@@ -228,12 +253,42 @@ export default function DepartmentPage() {
   const handleEventSelect = (event) => {
     console.log("event ", event)
     // setPcoordinate()
+    if (popup) {
+      setActiveDate(null);
+      setPopup(false);
+
+    } else {
+      setActiveDate(event.start);
+      setPopup(true);
+    }
+  }
+
+  const handleAddActivity = () => {
+    console.log("activedate ", activeDate)
+    const newEvent = firestore().collection(`projects/${id}/events`).doc()
+
+    newEvent.set({
+      id: newEvent.id,
+      title: 'Ажлын жагсаалт',
+      start: activeDate.toJSON(),
+      end: activeDate.toJSON(),
+      allday: true,
+    }).then(() => {
+      console.log("sucess")
+    })
+  }
+
+  const handleCalendarClick = e => {
+
+    setPcoordinate({ x: e.pageX, y: e.pageY });
+    console.log("e coordinate ", e.pageX, e.pageY)
   }
 
   if (loading) return <Loading />
 
   return (
     <GridContainer>
+      {/* Modal */}
       <Modal
         open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
@@ -343,6 +398,7 @@ export default function DepartmentPage() {
       </Modal>
 
       <GridItem xs={12}>
+        {/* Popup */}
         {popup ? <Card style={{
           marginTop: 0,
           position: 'fixed',
@@ -357,33 +413,23 @@ export default function DepartmentPage() {
         }}>
           <div className={classes.popupCircle} />
           <CardHeader>
-            {!editActivity ? (
-              <>
-                <h6>Материал нэмэх</h6>
-                <div>
+            <h6>Ажлын жагсаалт</h6>
+            <div>
+              <TextField label="Үйл ажиллагааны нэр" value={activityInput} onChange={e => setActivityInput(e.target.value)} margin="dense" id="outlined-basic" variant="outlined" size="small" />
+              <Button onClick={handleAddActivity} variant="contained" color="primary" style={{ marginLeft: 12, alignSelf: 'flex-end' }} >
+                Нэмэх
+              </Button>
+            </div>
+            <div>
+              {activities.map((item, index) => (
+                <div className={classes.activityRow}>
+                  <div className={classes.indexCell} >{index + 1}</div>
+                  <div className={classes.nameCell} >{item.name}</div>
+                  <Chip label="Материал нэмэх" onClick={() => { console.log("fjdklsjf"); setEditModalOpen(true) }} className={classes.addButtonCell} size="small" />
+                  <Chip onDelete={() => console.log("deletechip ")} size="small" />
                 </div>
-              </>
-            ) : (
-              <>
-                <h6>Ажлын жагсаалт</h6>
-                <div>
-                  <TextField margin="dense" id="outlined-basic" label="Үйл ажиллагааны нэр" variant="outlined" size="small" />
-                  <Button variant="contained" color="primary" style={{ marginLeft: 12, alignSelf: 'flex-end' }} >
-                    Нэмэх
-                  </Button>
-                </div>
-                <div>
-                  {activities.map((item, index) => (
-                    <div className={classes.activityRow}>
-                      <div className={classes.indexCell} >{index + 1}</div>
-                      <div className={classes.nameCell} >{item.name}</div>
-                      <Chip label="Материал нэмэх" onClick={() => { console.log("fjdklsjf"); setEditModalOpen(true) }} className={classes.addButtonCell} size="small" />
-                      <Chip onDelete={() => console.log("deletechip ")} size="small" />
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+              ))}
+            </div>
           </CardHeader>
         </Card> : null}
         <Card className={classes.mainCard}>
@@ -393,7 +439,7 @@ export default function DepartmentPage() {
           <CardBody>
             <GridContainer className={classes.projectBox}>
               <div style={{ height: 700, width: 1000 }}
-                onClick={e => console.log("e coordinate ", e.pageX, e.pageY)}
+                onClick={handleCalendarClick}
               >
                 <Calendar
                   localizer={localizer}
