@@ -1,16 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Chip from '@material-ui/core/Chip';
-import Box from '@material-ui/core/Box';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import AvatarGroup from '@material-ui/lab/AvatarGroup';
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
+import { firestore } from 'firebase';
 
 import AddIcon from '@material-ui/icons/Add';
 import { useHistory } from "react-router";
@@ -50,8 +43,18 @@ export default () => {
   const history = useHistory();
 
   const handleClick = () => {
-    console.log("addProjectCardd clicked");
-    history.push("add");
+    const newDoc = firestore().collection('projects').doc()
+
+    newDoc.set({
+      id: newDoc.id,
+      title: 'Шинэ төсөл',
+      due: '11-р сар',
+      type: 'Барилга',
+      percent: 85,
+    }).then(() => {
+      console.log("addProjectCardd clicked");
+      history.push(`project/${newDoc.id}`);
+    })
   }
 
   return (

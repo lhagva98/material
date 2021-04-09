@@ -32,6 +32,7 @@ import DeleteIcon from '@material-ui/icons/DeleteForever';
 import Loading from './Loading';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import materiallist from "materialList.json";
+import { useParams } from "react-router";
 
 
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
@@ -186,6 +187,8 @@ const useStyles = makeStyles(styles);
 export default function DepartmentPage() {
   const classes = useStyles();
 
+  const { id } = useParams();
+
   const [modalStyle] = React.useState(getModalStyle);
 
   const [loading, setLoading] = useState(false);
@@ -206,7 +209,7 @@ export default function DepartmentPage() {
   const [materials, setMaterials] = useState(materialData);
 
   useEffect(() => {
-
+    console.log("param ", id)
   }, []);
 
 
@@ -232,7 +235,7 @@ export default function DepartmentPage() {
   return (
     <GridContainer>
       <Modal
-        open={true}
+        open={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"

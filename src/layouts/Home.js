@@ -38,7 +38,7 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Route path='/home/project/add' component={ProjectAddPage} />
+    <Route path='/home/project/:id' component={ProjectAddPage} exact />
     {/* <Redirect from="/home" to="/home/dashboard" /> */}
   </Switch>
 );
