@@ -104,8 +104,12 @@ export default function DepartmentPage() {
 
   useEffect(() => {
 
-    firestore().collection('test').doc('123').get().then((doc) => {
-      console.log("doc ", doc.data());
+    firestore().collection('projects').onSnapshot(snapshot => {
+      let result = [];
+      snapshot.forEach(doc => {
+        result.push(doc.data());
+      })
+      setDarray(result);
     })
 
 
@@ -116,7 +120,7 @@ export default function DepartmentPage() {
 
   return (
     <GridContainer>
-     <GridItem xs={12} sm={12} md={12}>
+      <GridItem xs={12} sm={12} md={12}>
         <Card className={classes.mainCard}>
           <CardHeader color="primary">
             <h4 className={classes.cardTitleWhite}>Нийт төслүүд</h4>
@@ -126,7 +130,9 @@ export default function DepartmentPage() {
           </CardHeader>
           <CardBody>
             <GridContainer className={classes.projectBox}>
-              <ProjectCard />
+              {DArray.map(item => {
+                return (<ProjectCard project={item} />)
+              })}
               <AddProjectCard />
             </GridContainer>
 

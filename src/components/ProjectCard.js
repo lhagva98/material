@@ -11,6 +11,7 @@ import GridItem from "components/Grid/GridItem.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
+import { useHistory } from "react-router";
 
 import { AttachFile } from '@material-ui/icons';
 
@@ -58,31 +59,36 @@ function LinearProgressWithLabel(props) {
   );
 }
 
-export default () => {
+export default ({ project }) => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push(`project/${project.id}`);
+  }
 
   return (
     <GridItem xs={3} >
       <Card
-        onClick={() => { console.log("clike") }}
+        onClick={handleClick}
         className={classes.projectCard}
       >
         <CardHeader>
           <div className={classes.headerDetails} >
-            <Chip label="Барилга" size="small" />
+            <Chip label={project.type ? project.type : null} size="small" />
             <div>
-              Due: Feb21
+              Due: {project.due ? project.due : null}
             </div>
           </div>
           <div style={{ marginTop: 8 }}>
-            <span className={classes.titleText} >Зуун айл Хаус 8-11-102</span>
+            <span className={classes.titleText} >{project.title ? project.title : null}</span>
           </div>
         </CardHeader>
         <CardBody>
           <div>
             <span className={classes.timeText} >15 минутын өмнө шинэчлэгдсэн</span>
           </div>
-          <LinearProgressWithLabel value={74} />
+          <LinearProgressWithLabel value={project.percent ? project.percent : null} />
           <div className={classes.footerDetails}>
             <AvatarGroup max={4}>
               <Avatar alt="Remy Sharp" src={require('assets/img/tim_80x80.png')} />
