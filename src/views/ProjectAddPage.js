@@ -28,6 +28,8 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Select from 'react-select';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
+import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
 
 import Loading from './Loading';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -192,26 +194,29 @@ export default function DepartmentPage() {
   const [modalStyle] = React.useState(getModalStyle);
 
   const [loading, setLoading] = useState(false);
-  const [department, setDepartmant] = useState();
-  const [DArray, setDarray] = useState([]);
-  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [project, setProject] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deId, setdeId] = useState('');
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [root, setRoot] = useState('');
   const [events, setEvents] = useState([]);
   const [popup, setPopup] = useState(false);
   const [pcoordinate, setPcoordinate] = useState({ x: 600, y: 300 })
   const [activities, setActivities] = useState(activityData);
-  const [editActivity, setEditActivity] = useState(true);
   const [materials, setMaterials] = useState(materialData);
   const [activityInput, setActivityInput] = useState('');
   const [activeDate, setActiveDate] = useState(null);
+  const [activeEvent, setActiveEvent] = useState(null);
+  const [activeActivity, setActiveActivity] = useState(null);
+  const [materialName, setMaterialName] = useState('');
+  const [materialQuantity, setMaterialQuatity] = useState('');
+  const [materialPrePrice, setMaterialPrePrice] = useState('');
+  const [materialUnit, setMaterialUnit] = useState('');
+  const [editTitle, setEditTitle] = useState(null);
 
   useEffect(() => {
     console.log("param ", id)
+    firestore().doc(`projects/${id}`).onSnapshot(doc => {
+      setProject(doc.data());
+    })
+
     firestore().collection(`projects/${id}/events`).onSnapshot(snapshot => {
       let result = [];
       snapshot.forEach(doc => {
@@ -231,7 +236,7 @@ export default function DepartmentPage() {
 
 
   const handleSlotSelect = (slot) => {
-    console.log("slot ", events);
+    console.log("slot ", slot);
     // setPcoordinate({ x: slot.box.x, y: slot.box.y });
 
     if (popup) {
@@ -240,6 +245,7 @@ export default function DepartmentPage() {
 
     } else {
       setActiveDate(slot.start);
+      setActiveEvent(null);
       setPopup(true);
     }
     // setEvents(events => ([...events, {
@@ -250,38 +256,114 @@ export default function DepartmentPage() {
     // }]))
   }
 
+  const fetchActivities = ({ eventId }) => {
+    firestore().collection(`projects/${id}/events/${eventId}/activities`).onSnapshot(snap => {
+      let result = []
+      snap.forEach(doc => {
+        result.push(doc.data());
+      })
+      setActivities(result)
+    })
+    // firestore().collection(`projects/${id}/events`)
+    //   .where("start", "==", activeDate.toJSON())
+    //   .onSnapshot(snap => {
+    //     snap.forEach(doc => {
+    //       console.log("dafsdsaf ", doc.data());
+    //       setActiveEvent(doc.id);
+    //     })
+    //   })
+  }
+
+  const fetchMaterials = ({ activityId }) => {
+    firestore().collection(`projects/${id}/events/${activeEvent}/activities/${activityId}/materials`).onSnapshot(snap => {
+      let result = []
+      snap.forEach(doc => {
+        result.push(doc.data());
+      })
+      setMaterials(result)
+    })
+  }
+
   const handleEventSelect = (event) => {
     console.log("event ", event)
     // setPcoordinate()
     if (popup) {
       setActiveDate(null);
       setPopup(false);
-
     } else {
       setActiveDate(event.start);
+      setActiveEvent(event.id);
+      fetchActivities({ eventId: event.id });
       setPopup(true);
     }
   }
 
   const handleAddActivity = () => {
     console.log("activedate ", activeDate)
-    const newEvent = firestore().collection(`projects/${id}/events`).doc()
 
-    newEvent.set({
-      id: newEvent.id,
-      title: 'Ажлын жагсаалт',
-      start: activeDate.toJSON(),
-      end: activeDate.toJSON(),
-      allday: true,
-    }).then(() => {
-      console.log("sucess")
-    })
+    if (activeEvent) {
+      const newActivity = firestore().collection(`projects/${id}/events/${activeEvent}/activities`).doc();
+      newActivity.set({
+        id: newActivity.id,
+        name: activityInput,
+      }).then(() => {
+        console.log("sucess")
+        setActivityInput('');
+      })
+    } else {
+      const newEvent = firestore().collection(`projects/${id}/events`).doc()
+      newEvent.set({
+        id: newEvent.id,
+        title: 'Ажлын жагсаалт',
+        start: activeDate.toJSON(),
+        end: activeDate.toJSON(),
+        allday: true,
+      }).then(() => {
+        const newActivity = newEvent.collection('activities').doc()
+        newActivity.set({
+          id: newActivity.id,
+          name: activityInput,
+        }).then(() => {
+          console.log("sucess")
+          setActivityInput('');
+        })
+      })
+    }
   }
 
   const handleCalendarClick = e => {
 
     setPcoordinate({ x: e.pageX, y: e.pageY });
     console.log("e coordinate ", e.pageX, e.pageY)
+  }
+
+  const handleAddMaterial = item => {
+    setActiveActivity(item);
+    fetchMaterials({ activityId: item.id })
+    setEditModalOpen(true);
+  }
+
+  const handleMaterialAddClick = () => {
+    const newMaterial = firestore().collection(`projects/${id}/events/${activeEvent}/activities/${activeActivity.id}/materials`).doc();
+    newMaterial.set({
+      id: newMaterial.id,
+      name: materialName,
+      unit: materialUnit,
+      quantity: materialQuantity,
+      prePrice: materialPrePrice,
+      price: 0,
+      total: 0,
+    }).then(() => {
+      setMaterialName('');
+      setMaterialPrePrice('');
+      setMaterialQuatity('');
+      setMaterialUnit('');
+      console.log("success")
+    })
+  }
+
+  const handleDeleteMaterial = item => {
+    firestore().doc(`projects/${id}/events/${activeEvent}/activities/${activeActivity.id}/materials/${item.id}`).delete()
   }
 
   if (loading) return <Loading />
@@ -298,22 +380,28 @@ export default function DepartmentPage() {
         <div style={modalStyle} className={classes.paper}>
           {/* left side */}
           <div className={classes.paperLeft} >
-            <h5>Хана</h5>
+            <h5>{activeActivity && activeActivity.name ? activeActivity.name : null}</h5>
             <span>Материал нэмэх</span>
             <Select
               isSearchable={true}
               options={materiallist}
               className={classes.selectInputStyle}
+              onChange={(item) => {
+                console.log("item ", item)
+                setMaterialName(item.label);
+                setMaterialUnit(item.unit);
+              }}
             />
-            <TextField className={classes.mInput} value={name} margin="dense" label="Материалын нэр" variant="outlined" />
-            <TextField className={classes.mInput} value={desc} margin="dense" label="Тоо хэмжээ" variant="outlined" />
-            <TextField className={classes.mInput} value={desc} margin="dense" label="Санал болгох үнэ" variant="outlined" style={{ marginBottom: 40 }} />
+            <TextField value={materialName} onChange={e => setMaterialName(e.target.value)} className={classes.mInput} margin="dense" label="Материалын нэр" variant="outlined" />
+            <TextField value={materialQuantity} onChange={e => setMaterialQuatity(e.target.value)} className={classes.mInput} margin="dense" label="Тоо хэмжээ" variant="outlined" />
+            <TextField value={materialPrePrice} onChange={e => setMaterialPrePrice(e.target.value)} className={classes.mInput} margin="dense" label="Санал болгох үнэ" variant="outlined" style={{ marginBottom: 40 }} />
 
             <MButton
               size="large"
               color="primary"
               variant="contained"
               className={classes.addMaterialButton}
+              onClick={handleMaterialAddClick}
             >
               Нэмэх
             </MButton>
@@ -351,7 +439,7 @@ export default function DepartmentPage() {
                 <TableBody>
                   {materials.map((item) => (
                     <TableRow>
-                      <TableCell><DeleteIcon /></TableCell>
+                      <TableCell><DeleteIcon onClick={() => handleDeleteMaterial(item)} style={{ cursor: 'pointer' }} /></TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.unit}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
@@ -373,7 +461,7 @@ export default function DepartmentPage() {
               </Table>
             </div>
             <div>
-              Нийт дүн: {() => { let total = 0; materials.forEach((item) => total += item.total); return <span>{total}</span> }}
+              Нийт дүн: 0
             </div>
             <div className={classes.materialRightButtonBox}>
               <MButton
@@ -425,7 +513,7 @@ export default function DepartmentPage() {
                 <div className={classes.activityRow}>
                   <div className={classes.indexCell} >{index + 1}</div>
                   <div className={classes.nameCell} >{item.name}</div>
-                  <Chip label="Материал нэмэх" onClick={() => { console.log("fjdklsjf"); setEditModalOpen(true) }} className={classes.addButtonCell} size="small" />
+                  <Chip label="Материал нэмэх" onClick={() => { handleAddMaterial(item) }} className={classes.addButtonCell} size="small" />
                   <Chip onDelete={() => console.log("deletechip ")} size="small" />
                 </div>
               ))}
@@ -434,7 +522,17 @@ export default function DepartmentPage() {
         </Card> : null}
         <Card className={classes.mainCard}>
           <CardHeader color="primary">
-            <h4 className={classes.cardTitleWhite}>Төсөл шинээр үүсгэх</h4>
+            {editTitle !== null ? (
+              <div>
+                <TextField value={editTitle} onChange={(e) => setEditTitle(e.target.value)} label="Төслийн гарчиг" />
+                <SaveIcon onClick={() => { firestore().doc(`projects/${project.id}`).update({ title: editTitle }).then(() => setEditTitle(null)) }} style={{ cursor: 'pointer' }} />
+              </div>
+            ) : (
+              <div style={{ display: 'flex' }}>
+                <h4 className={classes.cardTitleWhite}>{project && project.title ? project.title : 'Төслийн нэр'}</h4>
+                <EditIcon onClick={() => setEditTitle(project.title)} style={{ cursor: 'pointer' }} />
+              </div>
+            )}
           </CardHeader>
           <CardBody>
             <GridContainer className={classes.projectBox}>
