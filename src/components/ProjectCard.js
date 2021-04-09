@@ -18,7 +18,7 @@ import { AttachFile } from '@material-ui/icons';
 const styles = {
   projectCard: {
     cursor: "pointer",
-    marginBottom: 0,
+    marginBottom: 25,
     marginTop: 0,
   },
   headerDetails: {

@@ -199,8 +199,8 @@ export default function DepartmentPage() {
   const [events, setEvents] = useState([]);
   const [popup, setPopup] = useState(false);
   const [pcoordinate, setPcoordinate] = useState({ x: 600, y: 300 })
-  const [activities, setActivities] = useState(activityData);
-  const [materials, setMaterials] = useState(materialData);
+  const [activities, setActivities] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [activityInput, setActivityInput] = useState('');
   const [activeDate, setActiveDate] = useState(null);
   const [activeEvent, setActiveEvent] = useState(null);
@@ -437,7 +437,7 @@ export default function DepartmentPage() {
                 </TableHead>
 
                 <TableBody>
-                  {materials.map((item) => (
+                  {materials.length && materials.map((item) => (
                     <TableRow>
                       <TableCell><DeleteIcon onClick={() => handleDeleteMaterial(item)} style={{ cursor: 'pointer' }} /></TableCell>
                       <TableCell>{item.name}</TableCell>
@@ -509,12 +509,12 @@ export default function DepartmentPage() {
               </Button>
             </div>
             <div>
-              {activities.map((item, index) => (
+              {activities.length && activities.map((item, index) => (
                 <div className={classes.activityRow}>
                   <div className={classes.indexCell} >{index + 1}</div>
                   <div className={classes.nameCell} >{item.name}</div>
                   <Chip label="Материал нэмэх" onClick={() => { handleAddMaterial(item) }} className={classes.addButtonCell} size="small" />
-                  <Chip onDelete={() => console.log("deletechip ")} size="small" />
+                  <Chip onDelete={() => firestore().doc(`projects/${id}/events/${activeEvent}/activities/${item.id}`).delete()} size="small" />
                 </div>
               ))}
             </div>
@@ -525,7 +525,7 @@ export default function DepartmentPage() {
             {editTitle !== null ? (
               <div>
                 <TextField value={editTitle} onChange={(e) => setEditTitle(e.target.value)} label="Төслийн гарчиг" />
-                <SaveIcon onClick={() => { firestore().doc(`projects/${project.id}`).update({ title: editTitle }).then(() => setEditTitle(null)) }} style={{ cursor: 'pointer' }} />
+                <SaveIcon onClick={() => { firestore().doc(`projects / ${project.id}`).update({ title: editTitle }).then(() => setEditTitle(null)) }} style={{ cursor: 'pointer' }} />
               </div>
             ) : (
               <div style={{ display: 'flex' }}>

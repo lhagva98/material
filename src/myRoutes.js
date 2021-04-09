@@ -13,13 +13,13 @@ import PlanPage from 'views/PlanPage';
 import AssignmentPage from 'views/AssignmentPage';
 
 const routes = [
-    {
-        path: "/dashboard",
-        name: "Үзүүлэлт",
-        icon: Dashboard,
-        component: DashboardPage,
-        layout: "/home"
-    },
+    // {
+    //     path: "/dashboard",
+    //     name: "Үзүүлэлт",
+    //     icon: Dashboard,
+    //     component: DashboardPage,
+    //     layout: "/home"
+    // },
     // {
     //     path: "/company",
     //     name: "Төслүүд",

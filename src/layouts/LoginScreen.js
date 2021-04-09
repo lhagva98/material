@@ -13,27 +13,11 @@ export default function LoginScreen() {
   let history = useHistory();
   
   function onClickLogin () {
-    const data = JSON.stringify({username: username, password: password});
-    fetch('http://localhost:3001/login/', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: data
-    })
-      .then(res => res.json())
-      .then(resJSON => {
-        const user = resJSON.da;
-        dispatch({
-          type: 'SET_CURRENT_USER',
-          payload: user
-        });
-        if(user.role === "1") history.replace('/ceo');
-        if(user.role === "2") history.replace('/manager');
-        if(user.role === "3") history.replace('/employee');
-      })
-      .catch(err => {console.log(err)})
+
+    if(username && password) {
+      history.replace('/home/project')
+    }
+
   } 
 
   return (
