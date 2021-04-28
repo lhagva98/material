@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Chip from '@material-ui/core/Chip';
 import Box from '@material-ui/core/Box';
@@ -14,6 +14,17 @@ import CardBody from "components/Card/CardBody.js";
 import { useHistory } from "react-router";
 
 import { AttachFile } from '@material-ui/icons';
+import { firestore } from "firebase";
+
+Date.prototype.yyyymmdd = function () {
+  var mm = this.getMonth() + 1; // getMonth() is zero-based
+  var dd = this.getDate();
+
+  return [this.getFullYear(),
+  (mm > 9 ? '' : '0') + mm,
+  (dd > 9 ? '' : '0') + dd
+  ].join('-');
+};
 
 const styles = {
   projectCard: {
@@ -62,10 +73,29 @@ function LinearProgressWithLabel(props) {
 export default ({ project }) => {
   const classes = useStyles();
   const history = useHistory();
+  const [progress, setProgress] = useState(null);
 
   const handleClick = () => {
     history.push(`project/${project.id}`);
   }
+
+  useEffect(() => {
+    firestore().collectionGroup(`materials`)
+      .where("projectId", "==", project.id)
+      .get()
+      .then(snapshot => {
+        let rtotal = 0, tcompleted = 0;
+        snapshot.forEach(sDoc => {
+          rtotal = rtotal + 1;
+          const data = sDoc.data();
+          console.log("material ", data)
+
+          if (data.checked) tcompleted = tcompleted + 1;
+        })
+        console.log("allmaterials", rtotal, tcompleted);
+        setProgress((tcompleted / rtotal) * 100)
+      })
+  }, [])
 
   return (
     <GridItem xs={3} >
@@ -75,20 +105,23 @@ export default ({ project }) => {
       >
         <CardHeader>
           <div className={classes.headerDetails} >
+            {/* barilgiin turul */}
             <Chip label={project.type ? project.type : null} size="small" />
-            <div>
-              Due: {project.due ? project.due : null}
-            </div>
+            {/* Created Date */}
+            {project.createdAt ? <div> {new Date(project.createdAt).yyyymmdd()}</div> : null}
           </div>
+          {/* Title */}
           <div style={{ marginTop: 8 }}>
             <span className={classes.titleText} >{project.title ? project.title : null}</span>
           </div>
         </CardHeader>
         <CardBody>
           <div>
+            {/* last edited */}
             <span className={classes.timeText} >15 минутын өмнө шинэчлэгдсэн</span>
           </div>
-          <LinearProgressWithLabel value={project.percent ? project.percent : null} />
+          {console.log("progress ", progress)}
+          <LinearProgressWithLabel value={progress} />
           <div className={classes.footerDetails}>
             <AvatarGroup max={4}>
               <Avatar alt="Remy Sharp" src={require('assets/img/tim_80x80.png')} />

@@ -21,8 +21,6 @@ import Card from "components/Card/Card.js";
 import Button from "components/CustomButtons/Button.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import ProjectCard from "components/ProjectCard";
-import AddProjectCard from "components/AddProjectCard";
 import { firestore } from 'firebase';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -38,50 +36,6 @@ import { useParams } from "react-router";
 
 
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
-
-const materialData = [
-  {
-    id: 1,
-    name: 'Банз',
-    unit: 'ш',
-    quantity: 4,
-    prePrice: 20000,
-    price: 18000,
-    total: 72000,
-    done: true,
-  },
-  {
-    id: 2,
-    name: 'Цемент',
-    unit: 'кг',
-    quantity: 10,
-    prePrice: 5000,
-    price: 5000,
-    total: 50000,
-    done: false,
-  },
-  {
-    id: 3,
-    name: 'Плита',
-    unit: 'м2',
-    quantity: 50,
-    prePrice: 3500,
-    price: 0,
-    total: 150000,
-    done: false,
-  },
-]
-
-const activityData = [
-  {
-    id: 1,
-    name: 'Шал',
-  },
-  {
-    id: 2,
-    name: 'Хана',
-  }
-]
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -213,25 +167,35 @@ export default function DepartmentPage() {
 
   useEffect(() => {
     console.log("param ", id)
+    // project data fetch
     firestore().doc(`projects/${id}`).onSnapshot(doc => {
-      setProject(doc.data());
+      // is project exists
+      if (doc.exists) {
+        setProject(doc.data());
+
+        // project events data fetch
+        firestore().collection(`projects/${id}/events`).onSnapshot(snapshot => {
+          let result = [];
+          snapshot.forEach(doc => {
+            let data = doc.data()
+            console.log("data ", data)
+            result.push({
+              id: data.id,
+              title: data.title,
+              start: new Date(data.start),
+              end: new Date(data.end),
+              allday: true,
+            })
+          })
+          setEvents(result);
+        })
+      }
+
+
+
     })
 
-    firestore().collection(`projects/${id}/events`).onSnapshot(snapshot => {
-      let result = [];
-      snapshot.forEach(doc => {
-        let data = doc.data()
-        console.log("data ", data)
-        result.push({
-          id: data.id,
-          title: data.title,
-          start: new Date(data.start),
-          end: new Date(data.end),
-          allday: true,
-        })
-      })
-      setEvents(result);
-    })
+
   }, []);
 
 
@@ -242,7 +206,8 @@ export default function DepartmentPage() {
     if (popup) {
       setActiveDate(null);
       setPopup(false);
-
+      setActivities([]);
+      setActiveEvent(null);
     } else {
       setActiveDate(slot.start);
       setActiveEvent(null);
@@ -258,11 +223,15 @@ export default function DepartmentPage() {
 
   const fetchActivities = ({ eventId }) => {
     firestore().collection(`projects/${id}/events/${eventId}/activities`).onSnapshot(snap => {
-      let result = []
-      snap.forEach(doc => {
-        result.push(doc.data());
-      })
-      setActivities(result)
+      if (!snap.empty) {
+        let result = []
+        snap.forEach(doc => {
+          result.push(doc.data());
+        })
+        setActivities(result)
+      } else {
+        setActivities([]);
+      }
     })
     // firestore().collection(`projects/${id}/events`)
     //   .where("start", "==", activeDate.toJSON())
@@ -276,11 +245,13 @@ export default function DepartmentPage() {
 
   const fetchMaterials = ({ activityId }) => {
     firestore().collection(`projects/${id}/events/${activeEvent}/activities/${activityId}/materials`).onSnapshot(snap => {
-      let result = []
-      snap.forEach(doc => {
-        result.push(doc.data());
-      })
-      setMaterials(result)
+      if (!snap.empty) {
+        let result = []
+        snap.forEach(doc => {
+          result.push(doc.data());
+        })
+        setMaterials(result)
+      }
     })
   }
 
@@ -353,6 +324,10 @@ export default function DepartmentPage() {
       prePrice: materialPrePrice,
       price: 0,
       total: 0,
+      checked: false,
+      activityId: activeActivity.id,
+      projectId: id,
+      eventId: activeEvent,
     }).then(() => {
       setMaterialName('');
       setMaterialPrePrice('');
@@ -364,6 +339,16 @@ export default function DepartmentPage() {
 
   const handleDeleteMaterial = item => {
     firestore().doc(`projects/${id}/events/${activeEvent}/activities/${activeActivity.id}/materials/${item.id}`).delete()
+  }
+
+  const getAllMaterials = () => {
+    firestore().collectionGroup(`materials`).onSnapshot(snapshot => {
+      let resutl = []
+      snapshot.forEach(sDoc => {
+        resutl.push({ ...sDoc.data(), id: sDoc.id })
+      })
+      console.log("allmaterials", resutl)
+    })
   }
 
   if (loading) return <Loading />
@@ -444,8 +429,8 @@ export default function DepartmentPage() {
                       <TableCell>{item.unit}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell>{item.prePrice}</TableCell>
-                      <TableCell>{item.price}</TableCell>
-                      <TableCell>{item.total}</TableCell>
+                      <TableCell>{item.checked ? item.price : <TextField onChange={(e) => console.log("hahah")} />}</TableCell>
+                      <TableCell>{item.checked ? item.total : <TextField onChange={(e) => console.log("hahah")} />}</TableCell>
                       <TableCell style={{ padding: 0 }} >
                         <Checkbox
                           // checked={state.checkedB}
@@ -461,7 +446,7 @@ export default function DepartmentPage() {
               </Table>
             </div>
             <div>
-              Нийт дүн: 0
+              {/* Нийт дүн: {materials.length && materials.reduce((a, b) => a.prePrice + b.prePrice)} */}
             </div>
             <div className={classes.materialRightButtonBox}>
               <MButton
@@ -492,7 +477,7 @@ export default function DepartmentPage() {
           position: 'fixed',
           left: pcoordinate.x,
           top: pcoordinate.y,
-          backgroundColor: '#ffffff90',
+          backgroundColor: '#ffffff',
           border: '1px solid #000000',
           borderRadius: 5,
           width: 480,
@@ -525,20 +510,25 @@ export default function DepartmentPage() {
             {editTitle !== null ? (
               <div>
                 <TextField value={editTitle} onChange={(e) => setEditTitle(e.target.value)} label="Төслийн гарчиг" />
-                <SaveIcon onClick={() => { firestore().doc(`projects / ${project.id}`).update({ title: editTitle }).then(() => setEditTitle(null)) }} style={{ cursor: 'pointer' }} />
+                <Button onClick={() => { firestore().doc(`projects/${project.id}`).update({ title: editTitle }).then(() => setEditTitle(null)) }} >
+                  <SaveIcon style={{ cursor: 'pointer' }} />
+                </Button>
               </div>
             ) : (
               <div style={{ display: 'flex' }}>
                 <h4 className={classes.cardTitleWhite}>{project && project.title ? project.title : 'Төслийн нэр'}</h4>
-                <EditIcon onClick={() => setEditTitle(project.title)} style={{ cursor: 'pointer' }} />
+                <EditIcon onClick={() => setEditTitle(project.title)} style={{ cursor: 'pointer', marginLeft: 20 }} />
               </div>
             )}
           </CardHeader>
           <CardBody>
             <GridContainer className={classes.projectBox}>
-              <div style={{ height: 700, width: 1000 }}
+              <div style={{ height: 700, width: 1000, padding: 20 }}
                 onClick={handleCalendarClick}
               >
+                <div>
+                  <Button onClick={getAllMaterials}>all materials</Button>
+                </div>
                 <Calendar
                   localizer={localizer}
                   events={events}

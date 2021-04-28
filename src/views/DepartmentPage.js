@@ -86,19 +86,8 @@ const useStyles = makeStyles(styles);
 
 export default function DepartmentPage() {
   const classes = useStyles();
-
-  const [modalStyle] = React.useState(getModalStyle);
-
   const [loading, setLoading] = useState(false);
-  const [department, setDepartmant] = useState();
   const [DArray, setDarray] = useState([]);
-  const [addModalOpen, setAddModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [deId, setdeId] = useState('');
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [root, setRoot] = useState('');
 
   const user = useSelector(state => state.user.currentUser);
 

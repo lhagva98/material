@@ -51,6 +51,7 @@ export default () => {
       due: '11-р сар',
       type: 'Барилга',
       percent: 85,
+      createdAt: new Date().toJSON(),
     }).then(() => {
       console.log("addProjectCardd clicked");
       history.push(`project/${newDoc.id}`);

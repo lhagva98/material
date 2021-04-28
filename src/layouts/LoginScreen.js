@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import { useDispatch } from 'react-redux';
 
 import './LoginStyles.scss'
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('user1');
   const [password, setPassword] = useState('');
-
-  const dispatch = useDispatch();
 
   let history = useHistory();
   
