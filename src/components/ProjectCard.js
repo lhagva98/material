@@ -88,11 +88,9 @@ export default ({ project }) => {
         snapshot.forEach(sDoc => {
           rtotal = rtotal + 1;
           const data = sDoc.data();
-          console.log("material ", data)
 
           if (data.checked) tcompleted = tcompleted + 1;
         })
-        console.log("allmaterials", rtotal, tcompleted);
         setProgress((tcompleted / rtotal) * 100)
       })
   }, [])
@@ -120,7 +118,6 @@ export default ({ project }) => {
             {/* last edited */}
             <span className={classes.timeText} >15 минутын өмнө шинэчлэгдсэн</span>
           </div>
-          {console.log("progress ", progress)}
           <LinearProgressWithLabel value={progress} />
           <div className={classes.footerDetails}>
             <AvatarGroup max={4}>

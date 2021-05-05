@@ -28,6 +28,12 @@ import Select from 'react-select';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import EditIcon from '@material-ui/icons/Edit';
 import SaveIcon from '@material-ui/icons/Save';
+import CardIcon from "components/Card/CardIcon.js";
+import Warning from "@material-ui/icons/Warning";
+import Icon from "@material-ui/core/Icon";
+import CardFooter from "components/Card/CardFooter.js";
+import Danger from "components/Typography/Danger.js";
+import Paper from '@material-ui/core/Paper';
 
 import Loading from './Loading';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -135,7 +141,10 @@ const styles = {
   },
   selectInputStyle: {
     zIndex: 20,
-  }
+  },
+  materialStats: {
+    padding: 20,
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -164,6 +173,12 @@ export default function DepartmentPage() {
   const [materialPrePrice, setMaterialPrePrice] = useState('');
   const [materialUnit, setMaterialUnit] = useState('');
   const [editTitle, setEditTitle] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [paid, setPaid] = useState(0);
+  const [saved, setSaved] = useState(0);
+  const [mIndex, setMIndex] = useState(-1)
+  const [iprice, setIprice] = useState('');
+  const [itotal, setItotal] = useState('');
 
   useEffect(() => {
     console.log("param ", id)
@@ -189,12 +204,30 @@ export default function DepartmentPage() {
           })
           setEvents(result);
         })
+
+        firestore().collectionGroup(`materials`)
+          .where("projectId", "==", id)
+          .onSnapshot(snapshot => {
+            let rtotal = 0, rpaid = 0, rsaving = 0;
+            snapshot.forEach(sDoc => {
+              const data = sDoc.data();
+              console.log("data ", parseInt(data.prePrice), parseInt(data.price), parseInt(data.quantity))
+              rtotal = rtotal + (parseInt(data.prePrice) * parseInt(data.quantity));
+
+              if (data.checked) {
+                rpaid = rpaid + (parseInt(data.price) * parseInt(data.quantity));
+                rsaving = rsaving + ((parseInt(data.prePrice) - parseInt(data.price)) * parseInt(data.quantity))
+              }
+            })
+
+            console.log('muahdfa', rtotal, rpaid, rsaving)
+            setTotal(rtotal);
+            setPaid(rpaid);
+            setSaved(rsaving);
+          })
       }
 
-
-
     })
-
 
   }, []);
 
@@ -341,14 +374,31 @@ export default function DepartmentPage() {
     firestore().doc(`projects/${id}/events/${activeEvent}/activities/${activeActivity.id}/materials/${item.id}`).delete()
   }
 
-  const getAllMaterials = () => {
-    firestore().collectionGroup(`materials`).onSnapshot(snapshot => {
-      let resutl = []
-      snapshot.forEach(sDoc => {
-        resutl.push({ ...sDoc.data(), id: sDoc.id })
+  const handleMaterialCheck = (e, index, itemID) => {
+    if (index !== mIndex) return
+    console.log("hha", e.target.checked, index, itemID)
+    firestore()
+      .doc(`projects/${id}/events/${activeEvent}/activities/${activeActivity.id}/materials/${itemID}`)
+      .update({
+        checked: e.target.checked,
+        price: e.target.checked ? iprice : 0,
+        total: e.target.checked ? itotal : 0,
       })
-      console.log("allmaterials", resutl)
-    })
+
+  }
+
+  const handleMaterialInputChange = (e, index, type, quantity) => {
+    console.log("edfasdf", e.target.value, index, type)
+    setMIndex(index);
+    if (type === 'price') {
+      setIprice(e.target.value);
+      setItotal(parseInt(e.target.value) * parseInt(quantity))
+      if (index !== mIndex) setItotal('')
+    }
+    if (type === 'total') {
+      setItotal(e.target.value);
+      if (index !== mIndex) setIprice('')
+    }
   }
 
   if (loading) return <Loading />
@@ -422,20 +472,22 @@ export default function DepartmentPage() {
                 </TableHead>
 
                 <TableBody>
-                  {materials.length && materials.map((item) => (
+                  {materials.length && materials.map((item, index) => (
                     <TableRow>
                       <TableCell><DeleteIcon onClick={() => handleDeleteMaterial(item)} style={{ cursor: 'pointer' }} /></TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.unit}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
                       <TableCell>{item.prePrice}</TableCell>
-                      <TableCell>{item.checked ? item.price : <TextField onChange={(e) => console.log("hahah")} />}</TableCell>
-                      <TableCell>{item.checked ? item.total : <TextField onChange={(e) => console.log("hahah")} />}</TableCell>
+                      <TableCell>{item.checked ? item.price : <TextField size="small" value={index === mIndex ? iprice : ''} onChange={(e) => handleMaterialInputChange(e, index, 'price', item.quantity)} />}</TableCell>
+                      <TableCell>{item.checked ? item.total : <TextField size="small" value={index === mIndex ? itotal : ''} onChange={(e) => handleMaterialInputChange(e, index, 'total', item.quantity)} />}</TableCell>
                       <TableCell style={{ padding: 0 }} >
                         <Checkbox
                           // checked={state.checkedB}
                           // onChange={handleChange}
                           name="checkedB"
+                          checked={item.checked}
+                          onChange={(e) => handleMaterialCheck(e, index, item.id)}
                           color="primary"
                           style={{ padding: 0 }}
                         />
@@ -523,12 +575,32 @@ export default function DepartmentPage() {
           </CardHeader>
           <CardBody>
             <GridContainer className={classes.projectBox}>
+              <div style={{ marginBottom: 20, width: '100%' }} >
+                <GridContainer >
+                  <GridItem md={4}>
+                    <Paper className={classes.materialStats}>
+                      <h6>Нийт материал:</h6>
+                      <h2>{total}₮</h2>
+                    </Paper>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <Paper className={classes.materialStats}>
+                      <h6>Батлагдсан:</h6>
+                      <h2>{paid}₮</h2>
+                    </Paper>
+                  </GridItem>
+                  <GridItem md={4}>
+                    <Paper className={classes.materialStats}>
+                      <h6>Хэмнэсэн:</h6>
+                      <h2>{saved}₮</h2>
+                    </Paper>
+                  </GridItem>
+                </GridContainer>
+              </div>
+
               <div style={{ height: 700, width: 1000, padding: 20 }}
                 onClick={handleCalendarClick}
               >
-                <div>
-                  <Button onClick={getAllMaterials}>all materials</Button>
-                </div>
                 <Calendar
                   localizer={localizer}
                   events={events}
