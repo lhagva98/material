@@ -29,14 +29,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
+
 // id: data.id,
 // title: data.title,
 // start: new Date(data.start),
 // end: new Date(data.end)
 
-const WorkEvent = ({ start, eventId, handleAddMaterial }) => {
+const WorkEvent = ( { handleAddMaterial, event }) => {
     const [open, setOpen] = useState(false);
     const [activivites, setActivities] = useState([]);
+    const { start, id: eventId } = event;
     const { id } = useParams()
     useEffect(() => {
         firestore().collection(`projects/${id}/events/${eventId}/activities`).onSnapshot(snap => {
@@ -51,10 +54,9 @@ const WorkEvent = ({ start, eventId, handleAddMaterial }) => {
             }
         })
     });
-
     return (
         <div>
-            <ListItem button onClick={() => setOpen(!open)}>
+            <ListItem button onClick={() => { setOpen(!open);} } >
                 <ListItemAvatar>
                     <Avatar>
                         <WorkIcon />
@@ -70,7 +72,7 @@ const WorkEvent = ({ start, eventId, handleAddMaterial }) => {
                         activivites && activivites.map((item) => {
                             if (item.name && item.name !== "") {
                                 return (
-                                    <ListItem button onClick={() => {handleAddMaterial(item)}}>
+                                    <ListItem button onClick={() => {handleAddMaterial(item, event)}}>
                                         <ListItemIcon>
                                             <TurnedIn />
                                         </ListItemIcon>
@@ -109,7 +111,7 @@ const UpcomingEvent = ({ events, handleAddMaterial }) => {
                 className={classes.root}
             >
                 {
-                    filteredEvents && filteredEvents.map((item) => (<WorkEvent start={item.start} eventId={item.id}  handleAddMaterial={handleAddMaterial}/>))
+                    filteredEvents && filteredEvents.map((item) => (<WorkEvent handleAddMaterial={handleAddMaterial} event={item}/>))
                 }
 
             </List>

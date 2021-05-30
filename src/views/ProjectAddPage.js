@@ -42,7 +42,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import materiallist from "materialList.json";
 import { useParams } from "react-router";
 import { useReactToPrint } from 'react-to-print';
-
+import { moneyFormat } from 'utils';
 const localizer = momentLocalizer(moment) // or globalizeLocalizer
 
 function rand() {
@@ -148,6 +148,7 @@ const styles = {
     padding: 20,
   },
 };
+
 
 const useStyles = makeStyles(styles);
 
@@ -262,7 +263,7 @@ export default function DepartmentPage() {
   }
 
   const fetchActivities = ({ eventId }) => {
-    firestore().collection(`projects/${id}/events/${eventId}/activities`).onSnapshot(snap => {
+    firestore().collection(`projects/${id}/events/${eventId}/activities`).get().then(snap => {
       if (!snap.empty) {
         let result = []
         snap.forEach(doc => {
@@ -283,14 +284,16 @@ export default function DepartmentPage() {
     //   })
   }
 
-  const fetchMaterials = ({ activityId }) => {
-    firestore().collection(`projects/${id}/events/${activeEvent}/activities/${activityId}/materials`).onSnapshot(snap => {
+  const fetchMaterials = ({ activityId, eventId }) => {
+    firestore().collection(`projects/${id}/events/${eventId ?? activeEvent}/activities/${activityId}/materials`).get().then(snap => {
       if (!snap.empty) {
         let result = []
         snap.forEach(doc => {
           result.push(doc.data());
         })
         setMaterials(result)
+      } else {
+        setMaterials([]) 
       }
     })
   }
@@ -343,16 +346,34 @@ export default function DepartmentPage() {
   }
 
   const handleCalendarClick = e => {
-
+    if (popup) {
+      setPopup(false);
+    }
     setPcoordinate({ x: e.pageX, y: e.pageY });
     console.log("e coordinate ", e.pageX, e.pageY)
   }
 
-  const handleAddMaterial = item => {
+  const handleAddMaterial = (item, event) => {
+    if (event) {
+      setActiveEvent(event.id);
+    }
     setActiveActivity(item);
-    fetchMaterials({ activityId: item.id })
+    fetchMaterials({ activityId: item.id, eventId: event?.id })
     setEditModalOpen(true);
+    // if (event) {
+    //   setActiveDate(event.start);
+    //   setActiveEvent(event.id);
+    //   fetchActivities({ eventId: event.id }, () => {
+    //     setActiveActivity(item);
+    //     fetchMaterials({ activityId: item.id })
+    //     setEditModalOpen(true);
+    //   });
+    // } else {
+    //   setActiveActivity(item);
+    //   fetchMaterials({ activityId: item.id })
+    //   setEditModalOpen(true);
   }
+
 
   const handleMaterialAddClick = () => {
     const newMaterial = firestore().collection(`projects/${id}/events/${activeEvent}/activities/${activeActivity.id}/materials`).doc();
@@ -592,19 +613,19 @@ export default function DepartmentPage() {
                   <GridItem md={4}>
                     <Paper className={classes.materialStats}>
                       <h6>Нийт материал:</h6>
-                      <h2>{total}₮</h2>
+                      <h2>{moneyFormat(total)}₮</h2>
                     </Paper>
                   </GridItem>
                   <GridItem md={4}>
                     <Paper className={classes.materialStats}>
                       <h6>Батлагдсан:</h6>
-                      <h2>{paid}₮</h2>
+                      <h2>{moneyFormat(paid)}₮</h2>
                     </Paper>
                   </GridItem>
                   <GridItem md={4}>
                     <Paper className={classes.materialStats}>
                       <h6>Хэмнэсэн:</h6>
-                      <h2>{saved}₮</h2>
+                      <h2>{moneyFormat(saved)}₮</h2>
                     </Paper>
                   </GridItem>
                 </GridContainer>
@@ -627,7 +648,7 @@ export default function DepartmentPage() {
                   />
                 </Grid>
                 <Grid item xs={12} md={3}>
-                  <UpcomingEvent events={events} handleAddMaterial={handleAddMaterial}/>
+                  <UpcomingEvent events={events} handleAddMaterial={handleAddMaterial} />
                 </Grid>
               </Grid>
             </GridContainer>

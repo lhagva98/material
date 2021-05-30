@@ -27,6 +27,8 @@ const hist = createBrowserHistory();
 
 Axios();
 
+
+
 ReactDOM.render(
   <Provider store={store}>
     <Router history={hist}>
