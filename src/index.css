@@ -1,0 +1,11 @@
+.material-stats {
+  padding: 20 i !important;
+}
+.deleteIcon {
+  display: none;
+}
+@media print {
+  .deleteIcon{
+    display: none;
+  }
+}
